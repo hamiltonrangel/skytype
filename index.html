@@ -120,7 +120,7 @@
 <div class="flex items-center gap-3 cursor-pointer" onclick="window.reiniciarJogo()">
 <span class="material-symbols-outlined text-tertiary text-2xl animate-pulse">terminal</span>
 <span class="text-lg font-headline-sm tracking-wider text-on-surface uppercase font-bold flex items-center gap-1.5">
-          SKY<span class="text-tertiary">TYPE</span> <span class="text-[10px] px-2 py-0.5 rounded bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono">ARCADE v1.0.4 - Google Sheets Sync</span>
+          SKY<span class="text-tertiary">TYPE</span> <span class="text-[10px] px-2 py-0.5 rounded bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono">ARCADE v1.0.8 - Pre-Flight Pilot Name</span>
 </span>
 </div>
 <div class="flex items-center gap-2 sm:gap-4">
@@ -143,6 +143,26 @@
 </header>
 <!-- Main Game Shell -->
 <main class="relative flex-1 w-full h-[calc(100vh-3.5rem)] overflow-hidden sky-bg">
+<!-- START GAME / PILOT REGISTRATION MODAL -->
+<div class="absolute inset-0 z-40 bg-[#0b1026]/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4" id="start-screen">
+<div class="max-w-md w-full flex flex-col items-center gap-5 bg-[#162447]/95 border-2 border-tertiary/70 p-6 sm:p-8 rounded-2xl shadow-[0_0_60px_rgba(0,219,233,0.4)] text-center relative">
+<div class="w-16 h-16 rounded-2xl bg-tertiary/20 border-2 border-tertiary flex items-center justify-center shadow-[0_0_25px_rgba(0,219,233,0.5)]">
+<span class="material-symbols-outlined text-tertiary text-[40px]">flight_takeoff</span>
+</div>
+<div>
+<div class="text-[11px] font-bold text-tertiary tracking-widest uppercase">REGISTRO DE VOO MILITAR</div>
+<h2 class="text-2xl sm:text-3xl font-headline-lg font-bold text-on-surface uppercase">SKYTYPE ARCADE</h2>
+</div>
+<p class="text-xs text-cyan-200/90">Digite o nome da sua chamada de piloto para registrar seus recordes no Google Sheets durante os voos.</p>
+<div class="flex flex-col gap-1.5 w-full text-left">
+<label class="text-[11px] text-tertiary font-bold uppercase tracking-wider">Nome do Piloto / Callsign:</label>
+<input type="text" id="start-pilot-name" placeholder="Ex: Águia 1, TopGun, Skywalker..." maxlength="20" class="w-full bg-black/80 border border-tertiary/60 rounded-xl px-4 py-3 text-base text-tertiary font-bold focus:outline-none focus:border-tertiary shadow-[0_0_15px_rgba(0,219,233,0.25)]">
+</div>
+<button class="w-full py-3.5 bg-gradient-to-r from-tertiary to-pink-500 text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,219,233,0.8)] transition-all uppercase tracking-wider cursor-pointer text-sm flex items-center justify-center gap-2 active:scale-95" onclick="window.iniciarVooComNome()">
+<span class="material-symbols-outlined text-[20px]">rocket_launch</span> DECOLAR AGORA
+</button>
+</div>
+</div>
 <!-- Top HUD Overlay -->
 <div class="absolute top-0 left-0 w-full z-20 flex flex-col px-4 py-2 bg-[#0b1026]/80 backdrop-blur-md border-b border-tertiary/30" id="game-hud">
 <div class="flex items-center justify-between w-full max-w-6xl mx-auto gap-3">
@@ -165,6 +185,11 @@
 <div class="flex flex-col items-center md:hidden">
 <span class="text-[9px] text-cyan-200/70 uppercase">Tecla</span>
 <span class="text-xs font-bold font-mono text-tertiary px-1 bg-black/60 rounded border border-tertiary/40" id="hud-last-key-mobile">-</span>
+</div>
+<!-- Nome do Piloto Ativo na Topbar -->
+<div class="hidden sm:flex flex-col items-start bg-black/60 px-3 py-1 rounded-lg border border-tertiary/40">
+<span class="text-[9px] text-cyan-200/70 uppercase">Piloto</span>
+<span class="text-xs font-bold font-mono text-tertiary" id="hud-pilot-display">PILOTO ÁS</span>
 </div>
 <div class="flex flex-col items-end">
 <span class="text-[10px] text-cyan-200/70 uppercase tracking-wider">Pontuação</span>
@@ -205,15 +230,6 @@
 <span class="text-xl font-headline-md text-secondary font-bold font-mono" id="go-destroyed">0</span>
 </div>
 </div>
-<div class="flex flex-col gap-2 w-full my-1">
-  <label class="text-[11px] text-cyan-300 font-bold uppercase tracking-wider text-left">Identificação do Piloto:</label>
-  <div class="flex gap-2">
-    <input type="text" id="go-pilot-name" placeholder="Digite seu nome..." maxlength="20" class="flex-1 bg-black/80 border border-tertiary/60 rounded-xl px-3 py-2 text-sm text-tertiary font-bold focus:outline-none focus:border-tertiary shadow-[0_0_10px_rgba(0,219,233,0.3)]">
-    <button id="go-save-btn" onclick="window.currentGame && window.currentGame.submitScore('go')" class="px-4 py-2 bg-tertiary text-black font-bold text-xs uppercase rounded-xl hover:bg-cyan-300 transition-all flex items-center gap-1 cursor-pointer">
-      <span class="material-symbols-outlined text-sm">save</span> Salvar
-    </button>
-  </div>
-  <div id="go-save-msg" class="text-[11px] text-emerald-400 font-bold hidden">✅ Recorde registrado na planilha!</div>
 </div>
 <div class="flex flex-col sm:flex-row items-center gap-3 w-full mt-2">
 <button class="flex-1 w-full px-5 py-3 bg-tertiary text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_25px_rgba(0,219,233,0.7)] transition-all uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2" onclick="window.reiniciarJogo()">
@@ -247,15 +263,6 @@
 <span class="text-lg font-headline-md text-white font-bold font-mono" id="vic-acc">100%</span>
 </div>
 </div>
-<div class="flex flex-col gap-2 w-full my-1">
-  <label class="text-[11px] text-cyan-300 font-bold uppercase tracking-wider text-left">Identificação do Piloto:</label>
-  <div class="flex gap-2">
-    <input type="text" id="vic-pilot-name" placeholder="Digite seu nome..." maxlength="20" class="flex-1 bg-black/80 border border-tertiary/60 rounded-xl px-3 py-2 text-sm text-tertiary font-bold focus:outline-none focus:border-tertiary shadow-[0_0_10px_rgba(0,219,233,0.3)]">
-    <button id="vic-save-btn" onclick="window.currentGame && window.currentGame.submitScore('vic')" class="px-4 py-2 bg-tertiary text-black font-bold text-xs uppercase rounded-xl hover:bg-cyan-300 transition-all flex items-center gap-1 cursor-pointer">
-      <span class="material-symbols-outlined text-sm">save</span> Salvar
-    </button>
-  </div>
-  <div id="vic-save-msg" class="text-[11px] text-emerald-400 font-bold hidden">✅ Recorde registrado na planilha!</div>
 </div>
 <div class="flex flex-col sm:flex-row items-center gap-3 w-full mt-2">
 <button class="flex-1 w-full px-5 py-3 bg-gradient-to-r from-tertiary to-pink-500 text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,219,233,0.8)] transition-all uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2" onclick="window.reiniciarJogo()">
@@ -824,14 +831,16 @@
         const spawnY = comesFromTop ? -60 : (this.height + 60);
 
         const progressRatio = Math.min(1.0, this.elapsedTime / this.missionDuration);
-        const speed = 2.20 + (progressRatio * 2.60) + Math.random() * 0.50; 
+        const baseSpeed = 1.40 + (progressRatio * 1.50) + Math.random() * 0.30;
+        const accelRate = 0.045 + (progressRatio * 0.040); // Aceleração física contínua por segundo 
         const targetAngle = Math.atan2(this.plane.y - spawnY, this.plane.x - spawnX);
 
         this.missiles.push({
           id: 'm_' + Math.random().toString(36).substring(2, 9),
           x: spawnX,
           y: spawnY,
-          speed: speed,
+          speed: baseSpeed,
+          accelRate: accelRate,
           turnRate: 0.048,
           word: cleanWord,
           normWord: cleanWord,
@@ -949,7 +958,7 @@
           });
         }
 
-        // Aguardando nome do jogador
+        LeaderboardManager.saveScore(this.pilotName, this.score, this.destroyedCount);
         document.getElementById('gameover-reason').innerText = reason;
         document.getElementById('go-score').innerText = this.score;
         document.getElementById('go-destroyed').innerText = this.destroyedCount;
@@ -960,7 +969,7 @@
 
       victory() {
         this.state = 'VICTORY';
-        // Aguardando nome do jogador
+        LeaderboardManager.saveScore(this.pilotName, this.score, this.destroyedCount);
         document.getElementById('vic-score').innerText = this.score;
         document.getElementById('vic-destroyed').innerText = this.destroyedCount;
         const acc = this.totalTyped > 0 ? Math.round((this.correctTyped / this.totalTyped) * 100) : 100;
@@ -1213,6 +1222,7 @@
             while (diff < -Math.PI) diff += Math.PI * 2;
 
             m.angle += diff * m.turnRate * (dt / 16.6);
+            m.speed += m.accelRate * (dt / 1000); // Aceleração física dinâmica contínua
             m.x += Math.cos(m.angle) * m.speed * (dt / 16.6);
             m.y += Math.sin(m.angle) * m.speed * (dt / 16.6);
           }
@@ -1642,11 +1652,20 @@
           this.ctx.textAlign = 'center';
           this.ctx.textBaseline = 'middle';
 
+                    // Renderizacao das letras e da velocidade do missil
+          const displaySpeed = Math.round(m.speed * 210); // Ex: 462 km/h
+          const speedStr = `${displaySpeed} km/h`;
+
+          this.ctx.font = 'bold 16px "JetBrains Mono", monospace';
           const textWidth = this.ctx.measureText(wordUpper).width;
-          const boxW = textWidth + 24;
+
+          this.ctx.font = 'bold 10px "JetBrains Mono", monospace';
+          const speedWidth = this.ctx.measureText(speedStr).width;
+
+          const boxW = Math.max(textWidth + 24, 75);
           const boxH = 32;
           const boxX = m.x - boxW / 2 + shakeOffsetX;
-          const boxY = m.y + 26;
+          const boxY = m.y + 28;
 
           // Fundo do Badge com feedback de erro em vermelho neon se errou recentemente
           if (isErrorShake) {
@@ -1660,7 +1679,7 @@
             this.ctx.strokeStyle = isCurrentActive ? '#00dbe9' : (m.targetedByPlayer ? '#ffb1c5' : 'rgba(125, 244, 255, 0.5)');
             this.ctx.lineWidth = isCurrentActive ? 2.5 : 1.5;
             this.ctx.shadowColor = isCurrentActive ? 'rgba(0, 219, 233, 0.9)' : 'rgba(0, 0, 0, 0.5)';
-            this.ctx.shadowBlur = isCurrentActive ? 14 : 5;
+            this.ctx.shadowBlur = 14;
           }
 
           if (this.ctx.roundRect) {
@@ -1674,29 +1693,38 @@
           }
           this.ctx.shadowBlur = 0;
 
-          // Renderização das letras: Digitadas em verde esmeralda neon brilhante, pendentes em branco puro
+          // 1. Renderizacao das letras (Verde para digitadas, Branco para pendentes)
+          this.ctx.textAlign = 'left';
+          this.ctx.textBaseline = 'middle';
+          const startX = boxX + 10;
+          this.ctx.font = 'bold 16px "JetBrains Mono", monospace';
+
           if (typedLen > 0) {
             const typedPart = wordUpper.slice(0, typedLen);
             const remainingPart = wordUpper.slice(typedLen);
 
-            this.ctx.textAlign = 'left';
-            const startX = boxX + 12;
-
-            // Letras já digitadas em verde neon (#34d399)
             this.ctx.fillStyle = '#34d399';
             this.ctx.shadowColor = '#34d399';
             this.ctx.shadowBlur = 10;
             this.ctx.fillText(typedPart, startX, boxY + boxH / 2);
 
-            // Letras restantes em branco puro em negrito
             this.ctx.shadowBlur = 0;
             const typedW = this.ctx.measureText(typedPart).width;
             this.ctx.fillStyle = '#ffffff';
             this.ctx.fillText(remainingPart, startX + typedW, boxY + boxH / 2);
           } else {
             this.ctx.fillStyle = isErrorShake ? '#ffb4ab' : (m.targetedByPlayer ? '#ffb1c5' : '#ffffff');
-            this.ctx.fillText(wordUpper, boxX + boxW / 2, boxY + boxH / 2);
+            this.ctx.fillText(wordUpper, startX, boxY + boxH / 2);
           }
+
+          // 2. Renderizacao da Velocidade Dinamica ACIMA da caixa (HUD Militar Amarelo Neon)
+          this.ctx.font = 'bold 11px "JetBrains Mono", "Space Grotesk", monospace';
+          this.ctx.textAlign = 'center';
+          this.ctx.fillStyle = '#fbbf24';
+          this.ctx.shadowColor = '#fbbf24';
+          this.ctx.shadowBlur = 8;
+          this.ctx.fillText(`⚡ ${speedStr}`, m.x + shakeOffsetX, boxY + boxH + 12);
+          this.ctx.shadowBlur = 0;
 
           this.ctx.restore();
         }
@@ -1780,7 +1808,23 @@
       }
     }
 
-    // Inicialização direta do jogo
+        // Funcao global para decolar registrando o nome do piloto antes do jogo
+    window.iniciarVooComNome = function() {
+      const inputEl = document.getElementById('start-pilot-name');
+      const name = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : 'Piloto Ás';
+      
+      if (window.currentGame) {
+        window.currentGame.pilotName = name;
+      }
+      
+      // Atualizar o indicador do piloto no HUD do topo
+      const pilotDisplay = document.getElementById('hud-pilot-display');
+      if (pilotDisplay) pilotDisplay.innerText = name.toUpperCase();
+
+      document.getElementById('start-screen').classList.add('hidden');
+      if (window.currentGame) window.currentGame.restart();
+    };
+
     window.reiniciarJogo = function() {
       if (window.currentGame) {
         window.currentGame.restart();
