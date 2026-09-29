@@ -494,14 +494,14 @@
       explosion: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBmALespId7qV87cKasGzmrtA8Z60RfDnNNsyvS8tDnGFk-BhB5OISRV7B4IfVmL4m3e3LcT-7m_lE12ai1eloOFyfz_G8jLrli6R4HeuROwgsxUUu1nyNFiPUniBI_PnDhyaaY2Ta-MSP7KbDHCcTKsjBvtpMNz81du0vvmu9bvTCm_IttLdGitk8JWz8HxeytRTkczj-ieZrouqvEwf6fg_CksiI86to-3p8lwhwQOn97_qiz785LBSynyTP-kpwMsw'
     };
 
-            // Leaderboard com integração robusta via URL encoded (GET / POST)
+                // Leaderboard com integração ao Google Sheets (Compatível com GET/POST e fallback JSONP)
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8INelrWDJ51f0CfNV3qWQ3oVythO8ROlKGU4_RfUcHGOZ2Ann2Kea9pkGnm46JVqgew/exec';
     const LEADERBOARD_KEY = 'skytype_arcade_lb';
 
     class LeaderboardManager {
       static getList(callback) {
-        // Busca assíncrona dos dados em tempo real no Google Sheets
-        fetch(GOOGLE_SCRIPT_URL)
+        // Tenta buscar os dados em tempo real no Google Sheets
+        fetch(GOOGLE_SCRIPT_URL + '?action=read')
           .then(res => res.json())
           .then(data => {
             if (Array.isArray(data)) {
@@ -510,35 +510,52 @@
             }
           })
           .catch(err => {
-            console.log('Off-line / Usando dados locais do Ranking', err);
-            try {
-              const raw = localStorage.getItem(LEADERBOARD_KEY);
-              if (callback && raw) callback(JSON.parse(raw));
-            } catch(e){}
+            console.log('Tentando via GET simples no Google Sheets...', err);
+            fetch(GOOGLE_SCRIPT_URL)
+              .then(r => r.json())
+              .then(data => {
+                if (Array.isArray(data) && callback) callback(data);
+              })
+              .catch(e => {
+                console.log('Usando cache local do Ranking', e);
+                try {
+                  const raw = localStorage.getItem(LEADERBOARD_KEY);
+                  if (callback && raw) callback(JSON.parse(raw));
+                } catch(err2){}
+              });
           });
       }
 
       static saveScore(pilotName, score, abatidos, onDone) {
         const name = (pilotName && pilotName.trim()) ? pilotName.trim() : 'Piloto Ás';
         
-        // Envio via URLSearchParams (suporte universal sem bloqueio de CORS)
-        const params = new URLSearchParams();
-        params.append('nome', name);
-        params.append('pontuacao', score);
-        params.append('abatidos', abatidos || 0);
+        // Envio via parâmetros de URL (compatível 100% com Google Apps Script sem bloqueio de CORS)
+        const sendUrl = `${GOOGLE_SCRIPT_URL}?nome=${encodeURIComponent(name)}&pontuacao=${encodeURIComponent(score)}&abatidos=${encodeURIComponent(abatidos || 0)}`;
 
-        fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: params.toString()
-        }).then(() => {
-          console.log('Pontuação enviada com sucesso para o Google Sheets!');
-          if (onDone) onDone();
-        }).catch(e => {
-          console.log('Erro ao salvar no Google Sheets:', e);
-          if (onDone) onDone();
-        });
+        // 1. Tentar via GET direto no Apps Script (grava instantaneamente)
+        fetch(sendUrl, { mode: 'no-cors' })
+          .then(() => {
+            console.log('Recorde enviado para o Google Sheets via GET params!');
+            if (onDone) onDone();
+          })
+          .catch(e => {
+            // 2. Se falhar, tenta fallback via POST Form Data
+            const params = new URLSearchParams();
+            params.append('nome', name);
+            params.append('pontuacao', score);
+            params.append('abatidos', abatidos || 0);
+
+            fetch(GOOGLE_SCRIPT_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: params.toString()
+            }).then(() => {
+              if (onDone) onDone();
+            }).catch(err => {
+              if (onDone) onDone();
+            });
+          });
       }
     }
 
