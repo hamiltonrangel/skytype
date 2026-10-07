@@ -1899,6 +1899,11 @@
           const wordUpper = m.word;
           const typedLen = Math.min(m.typedIndex || 0, wordUpper.length);
 
+          const arrowMap = { 'U': '⬆', 'D': '⬇', 'L': '⬅', 'R': '➡' };
+          const formattedWord = (this.controlMode === 'arrows')
+            ? wordUpper.split('').map(ch => arrowMap[ch] || ch).join(' ')
+            : wordUpper;
+
           this.ctx.save();
           this.ctx.font = 'bold 18px "JetBrains Mono", "Space Grotesk", monospace';
           this.ctx.textAlign = 'center';
@@ -1908,9 +1913,9 @@
           const speedStr = `${displaySpeed} km/h`;
 
           this.ctx.font = 'bold 20px "JetBrains Mono", monospace';
-          const textWidth = this.ctx.measureText(wordUpper).width;
+          const textWidth = this.ctx.measureText(formattedWord).width;
 
-          const boxW = Math.max(textWidth + 24, 75);
+          const boxW = Math.max(textWidth + 28, 80);
           const boxH = 40;
           const boxX = m.x - boxW / 2 + shakeOffsetX;
           const boxY = m.y + 28;
@@ -1942,13 +1947,8 @@
 
           this.ctx.textAlign = 'left';
           this.ctx.textBaseline = 'middle';
-          const startX = boxX + 10;
+          const startX = boxX + 14;
           this.ctx.font = 'bold 20px "JetBrains Mono", monospace';
-
-          const arrowMap = { 'U': '⬆', 'D': '⬇', 'L': '⬅', 'R': '➡' };
-          const formattedWord = (this.controlMode === 'arrows')
-            ? wordUpper.split('').map(ch => arrowMap[ch] || ch).join(' ')
-            : wordUpper;
 
           if (typedLen > 0) {
             let typedPart = wordUpper.slice(0, typedLen);
