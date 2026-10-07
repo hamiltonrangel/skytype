@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-
-<html class="dark" lang="pt-BR"><head>
+<html class="dark" lang="pt-BR">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="web_standard" name="shell-type"/>
@@ -120,11 +120,10 @@
 <div class="flex items-center gap-3 cursor-pointer" onclick="window.reiniciarJogo()">
 <span class="material-symbols-outlined text-tertiary text-2xl animate-pulse">terminal</span>
 <span class="text-lg font-headline-sm tracking-wider text-on-surface uppercase font-bold flex items-center gap-1.5">
-          SKY<span class="text-tertiary">TYPE</span> <span class="text-[10px] px-2 py-0.5 rounded bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono">ARCADE v1.0.8 - Pre-Flight Pilot Name</span>
+          SKY<span class="text-tertiary">TYPE</span> <span class="text-[10px] px-2 py-0.5 rounded bg-tertiary/20 text-tertiary border border-tertiary/40 font-mono">ARCADE v1.3.7</span>
 </span>
 </div>
 <div class="flex items-center gap-2 sm:gap-4">
-<!-- Indicador de Teclado Ativo e Feedback de Tecla Digitada -->
 <div class="hidden md:flex items-center gap-1.5 bg-black/60 px-3 py-1 rounded-lg border border-tertiary/40 shadow-[0_0_10px_rgba(0,219,233,0.15)]">
 <span class="text-[10px] text-cyan-200/70 uppercase tracking-widest font-mono">ÚLTIMA TECLA:</span>
 <span class="font-mono text-sm font-bold text-tertiary bg-tertiary/20 px-1.5 py-0.2 rounded border border-tertiary/60 min-w-[24px] text-center" id="hud-last-key">-</span>
@@ -143,9 +142,9 @@
 </header>
 <!-- Main Game Shell -->
 <main class="relative flex-1 w-full h-[calc(100vh-3.5rem)] overflow-hidden sky-bg">
-<!-- START GAME / PILOT REGISTRATION MODAL -->
+<!-- START GAME / PILOT REGISTRATION MODAL WITH WEAPON SELECTION -->
 <div class="absolute inset-0 z-40 bg-[#0b1026]/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4" id="start-screen">
-<div class="max-w-md w-full flex flex-col items-center gap-5 bg-[#162447]/95 border-2 border-tertiary/70 p-6 sm:p-8 rounded-2xl shadow-[0_0_60px_rgba(0,219,233,0.4)] text-center relative">
+<div class="max-w-md w-full flex flex-col items-center gap-4 bg-[#162447]/95 border-2 border-tertiary/70 p-6 sm:p-8 rounded-2xl shadow-[0_0_60px_rgba(0,219,233,0.4)] text-center relative">
 <div class="w-16 h-16 rounded-2xl bg-tertiary/20 border-2 border-tertiary flex items-center justify-center shadow-[0_0_25px_rgba(0,219,233,0.5)]">
 <span class="material-symbols-outlined text-tertiary text-[40px]">flight_takeoff</span>
 </div>
@@ -153,20 +152,60 @@
 <div class="text-[11px] font-bold text-tertiary tracking-widest uppercase">REGISTRO DE VOO MILITAR</div>
 <h2 class="text-2xl sm:text-3xl font-headline-lg font-bold text-on-surface uppercase">SKYTYPE ARCADE</h2>
 </div>
-<p class="text-xs text-cyan-200/90">Digite o nome da sua chamada de piloto para registrar seus recordes no Google Sheets durante os voos.</p>
+
+<!-- Escolha do Modo de Controle (Dificuldade / Acessibilidade) -->
+<div class="flex flex-col gap-1.5 w-full text-left my-0.5">
+<label class="text-[11px] text-tertiary font-bold uppercase tracking-wider">Modo de Controle:</label>
+<div class="grid grid-cols-2 gap-2">
+  <div class="flex flex-col p-2.5 bg-black/80 border-2 border-tertiary rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative shadow-[0_0_15px_rgba(0,219,233,0.3)]" id="control-option-alpha" onclick="window.selectControlMode('alpha')">
+    <div class="flex items-center gap-1.5 font-bold text-xs text-tertiary">
+      <span class="material-symbols-outlined text-sm">keyboard</span> Alfabeto (Teclas)
+    </div>
+    <span class="text-[10px] text-cyan-200/70 mt-1">Digita palavras em português.</span>
+  </div>
+
+  <div class="flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60" id="control-option-arrows" onclick="window.selectControlMode('arrows')">
+    <div class="flex items-center gap-1.5 font-bold text-xs text-amber-400">
+      <span class="material-symbols-outlined text-sm">grid_view</span> Setas ⬆⬇⬅➡
+    </div>
+    <span class="text-[10px] text-amber-200/70 mt-1">Sequências curtas de 3 setas (Ideal para iniciantes).</span>
+  </div>
+</div>
+</div>
+
+<!-- Escolha de Armamento -->
+<div class="flex flex-col gap-1.5 w-full text-left my-0.5">
+<label class="text-[11px] text-tertiary font-bold uppercase tracking-wider">Escolha o Modo de Disparo:</label>
+<div class="grid grid-cols-2 gap-2">
+  <div class="flex flex-col p-2.5 bg-black/80 border-2 border-tertiary rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative shadow-[0_0_15px_rgba(0,219,233,0.3)]" id="weapon-option-missile" onclick="window.selectWeaponMode('missile')">
+    <div class="flex items-center gap-1.5 font-bold text-xs text-tertiary">
+      <span class="material-symbols-outlined text-sm">rocket</span> Opção 1: Míssil
+    </div>
+    <span class="text-[10px] text-cyan-200/70 mt-1">Dispara 1 míssil ao completar a sequência.</span>
+  </div>
+
+  <div class="flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60" id="weapon-option-vulcan" onclick="window.selectWeaponMode('vulcan')">
+    <div class="flex items-center gap-1.5 font-bold text-xs text-secondary">
+      <span class="material-symbols-outlined text-sm">bolt</span> Opção 2: Canhão
+    </div>
+    <span class="text-[10px] text-cyan-200/70 mt-1">1 tiro por acerto. Explode no último elemento!</span>
+  </div>
+</div>
+</div>
+
 <div class="flex flex-col gap-1.5 w-full text-left">
 <label class="text-[11px] text-tertiary font-bold uppercase tracking-wider">Nome do Piloto / Callsign:</label>
 <input type="text" id="start-pilot-name" placeholder="Ex: Águia 1, TopGun, Skywalker..." maxlength="20" class="w-full bg-black/80 border border-tertiary/60 rounded-xl px-4 py-3 text-base text-tertiary font-bold focus:outline-none focus:border-tertiary shadow-[0_0_15px_rgba(0,219,233,0.25)]">
 </div>
-<button class="w-full py-3.5 bg-gradient-to-r from-tertiary to-pink-500 text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,219,233,0.8)] transition-all uppercase tracking-wider cursor-pointer text-sm flex items-center justify-center gap-2 active:scale-95" onclick="window.iniciarVooComNome()">
+<button class="w-full py-3.5 bg-gradient-to-r from-tertiary to-pink-500 text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,219,233,0.8)] transition-all uppercase tracking-wider cursor-pointer text-sm flex items-center justify-center gap-2 active:scale-95 mt-1" onclick="window.iniciarVooComNome()">
 <span class="material-symbols-outlined text-[20px]">rocket_launch</span> DECOLAR AGORA
 </button>
 </div>
 </div>
+
 <!-- Top HUD Overlay -->
 <div class="absolute top-0 left-0 w-full z-20 flex flex-col px-4 py-2 bg-[#0b1026]/80 backdrop-blur-md border-b border-tertiary/30" id="game-hud">
 <div class="flex items-center justify-between w-full max-w-6xl mx-auto gap-3">
-<!-- Cloud Flight Path Progress (Travessia de 30s) -->
 <div class="flex items-center gap-2 flex-1 max-w-md">
 <span class="text-xs font-bold text-cyan-300 uppercase flex items-center gap-1 drop-shadow">
 <span class="material-symbols-outlined text-sm">cloud</span> Nuvem A
@@ -179,14 +218,11 @@
 </span>
 <span class="text-xs font-mono font-bold text-tertiary ml-1 px-2 py-0.5 rounded bg-black/80 border border-tertiary/50 min-w-[42px] text-center" id="hud-timer">30s</span>
 </div>
-<!-- Pilot, Score, Destroyed & Vidas -->
 <div class="flex items-center gap-4 sm:gap-6">
-<!-- Indicador de tecla mobile/compacto -->
 <div class="flex flex-col items-center md:hidden">
 <span class="text-[9px] text-cyan-200/70 uppercase">Tecla</span>
 <span class="text-xs font-bold font-mono text-tertiary px-1 bg-black/60 rounded border border-tertiary/40" id="hud-last-key-mobile">-</span>
 </div>
-<!-- Nome do Piloto Ativo na Topbar -->
 <div class="hidden sm:flex flex-col items-start bg-black/60 px-3 py-1 rounded-lg border border-tertiary/40">
 <span class="text-[9px] text-cyan-200/70 uppercase">Piloto</span>
 <span class="text-xs font-bold font-mono text-tertiary" id="hud-pilot-display">PILOTO ÁS</span>
@@ -199,19 +235,19 @@
 <span class="text-[10px] text-cyan-200/70 uppercase tracking-wider">Mísseis Abatidos</span>
 <span class="text-base sm:text-lg font-headline-sm text-secondary font-bold font-mono tracking-wider drop-shadow" id="hud-destroyed">00</span>
 </div>
-<!-- 5 Vidas / Escudos -->
 <div class="flex flex-col items-center">
 <span class="text-[10px] text-cyan-200/70 uppercase tracking-wider mb-0.5">Vidas</span>
-<div class="flex items-center gap-1 bg-black/50 px-2 py-1 rounded-lg border border-pink-500/40" id="hud-shields"><span class="material-symbols-outlined text-secondary drop-shadow-[0_0_8px_rgba(255,177,197,0.9)] text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="material-symbols-outlined text-secondary drop-shadow-[0_0_8px_rgba(255,177,197,0.9)] text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="material-symbols-outlined text-secondary drop-shadow-[0_0_8px_rgba(255,177,197,0.9)] text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="material-symbols-outlined text-secondary drop-shadow-[0_0_8px_rgba(255,177,197,0.9)] text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span><span class="material-symbols-outlined text-secondary drop-shadow-[0_0_8px_rgba(255,177,197,0.9)] text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span></div>
+<div class="flex items-center gap-1 bg-black/50 px-2 py-1 rounded-lg border border-pink-500/40" id="hud-shields"></div>
 </div>
 </div>
 </div>
 </div>
-<!-- Active Game Container & Canvas (Visão Panorâmica Limpa) -->
+
 <div class="relative w-full h-full block overflow-hidden sky-bg cursor-crosshair" id="game-container">
-<canvas class="w-full h-full block relative z-0" height="968" id="game-canvas" width="1280"></canvas>
-<div class="absolute inset-0 pointer-events-none transition-transform duration-75 z-10" id="shake-container" style="transform: translate(0px, 0px);"></div>
+<canvas class="w-full h-full block relative z-0" id="game-canvas"></canvas>
+<div class="absolute inset-0 pointer-events-none transition-transform duration-75 z-10" id="shake-container"></div>
 </div>
+
 <!-- GAME OVER OVERLAY -->
 <div class="absolute inset-0 z-30 bg-[#0b1026]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center hidden" id="gameover-screen">
 <div class="max-w-md w-full flex flex-col items-center gap-4 bg-[#162447]/95 border-2 border-error/60 p-6 sm:p-8 rounded-2xl shadow-[0_0_50px_rgba(239,68,68,0.5)]">
@@ -230,7 +266,6 @@
 <span class="text-xl font-headline-md text-secondary font-bold font-mono" id="go-destroyed">0</span>
 </div>
 </div>
-</div>
 <div class="flex flex-col sm:flex-row items-center gap-3 w-full mt-2">
 <button class="flex-1 w-full px-5 py-3 bg-tertiary text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_25px_rgba(0,219,233,0.7)] transition-all uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2" onclick="window.reiniciarJogo()">
 <span class="material-symbols-outlined text-[20px]">replay</span> JOGAR NOVAMENTE [ENTER]
@@ -241,13 +276,14 @@
 </div>
 </div>
 </div>
+
 <!-- VICTORY OVERLAY -->
 <div class="absolute inset-0 z-30 bg-[#0b1026]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center hidden" id="victory-screen">
 <div class="max-w-md w-full flex flex-col items-center gap-4 bg-[#162447]/95 border-2 border-tertiary/80 p-6 sm:p-8 rounded-2xl shadow-[0_0_60px_rgba(0,219,233,0.5)]">
 <div class="w-16 h-16 rounded-full bg-tertiary/20 border-2 border-tertiary flex items-center justify-center shadow-[0_0_25px_rgba(0,219,233,0.6)]">
 <span class="material-symbols-outlined text-tertiary text-[42px]" style="font-variation-settings: 'FILL' 1;">verified</span>
 </div>
-<h2 class="text-2xl sm:text-3xl font-headline-lg font-bold text-tertiary uppercase tracking-wider">MISSÃO CUMPRIDA!</h2>
+<h2 class="text-2xl sm:text-3xl font-headline-lg font-bold text-tertiary uppercase tracking-wider">CAÇA BOSS DESTRUÍDO! MISSÃO CUMPRIDA!</h2>
 <p class="text-xs sm:text-sm text-cyan-200">Caça interceptou a rota aérea e completou a travessia de 30 segundos pousando na Nuvem B!</p>
 <div class="grid grid-cols-3 gap-2 w-full bg-black/60 p-3 rounded-xl border border-tertiary/30 my-1">
 <div class="flex flex-col">
@@ -263,7 +299,6 @@
 <span class="text-lg font-headline-md text-white font-bold font-mono" id="vic-acc">100%</span>
 </div>
 </div>
-</div>
 <div class="flex flex-col sm:flex-row items-center gap-3 w-full mt-2">
 <button class="flex-1 w-full px-5 py-3 bg-gradient-to-r from-tertiary to-pink-500 text-black font-headline-sm font-bold rounded-xl hover:shadow-[0_0_30px_rgba(0,219,233,0.8)] transition-all uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2" onclick="window.reiniciarJogo()">
 <span class="material-symbols-outlined text-[20px]">rocket_launch</span> NOVO VOO [ENTER]
@@ -274,6 +309,7 @@
 </div>
 </div>
 </div>
+
 <!-- LEADERBOARD MODAL -->
 <div class="absolute inset-0 z-40 bg-[#0b1026]/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 overflow-y-auto hidden" id="leaderboard-screen">
 <div class="max-w-2xl w-full flex flex-col items-center gap-4 bg-[#162447]/95 border border-tertiary/40 p-6 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.85)] relative backdrop-blur-xl my-auto">
@@ -314,6 +350,7 @@
 </div>
 </div>
 </div>
+
 <!-- RULES / SETTINGS MODAL -->
 <div class="absolute inset-0 z-40 bg-[#0b1026]/90 backdrop-blur-xl flex flex-col items-center justify-center p-4 hidden" id="settings-screen">
 <div class="max-w-md w-full flex flex-col gap-4 bg-[#162447] border-2 border-tertiary/50 p-6 rounded-2xl shadow-2xl">
@@ -326,9 +363,9 @@
 </button>
 </div>
 <div class="flex flex-col gap-2.5 text-xs sm:text-sm text-cyan-100">
-<p><strong class="text-tertiary">Digitação Completa com Vocabulário Dinâmico:</strong> Digite as letras no teclado para abater os alvos (ex: <strong class="text-white">VENTO, VOO, VELOZ, VAPOR, VALE, VISOR, FOGO, RADAR, PILOTO</strong> e muito mais). Todas as letras do alfabeto (A até Z, incluindo o <span class="text-tertiary font-bold">V</span>) são registradas com precisão instantânea!</p>
-<p><strong class="text-tertiary">Mira Inteligente:</strong> Ao pressionar a primeira letra de uma palavra que se aproxima, a mira trava automaticamente no míssil mais próximo. Cada letra certa brilha em verde esmeralda.</p>
-<p><strong class="text-tertiary">Disparo Automático de Minimísseis:</strong> Ao completar a palavra, seu caça dispara instantaneamente um minimíssil com pós-combustão que pulveriza o alvo no ar.</p>
+<p><strong class="text-tertiary">Digitação Completa com Vocabulário Dinâmico:</strong> Digite as letras no teclado para abater os alvos (ex: <strong class="text-white">VENTO, VOO, VELOZ, VAPOR, VALE, VISOR, FOGO, RADAR, PILOTO</strong> e muito mais). Todas as letras do alfabeto (A até Z) são registradas com precisão instantânea!</p>
+<p><strong class="text-tertiary">Opção 1 - Míssil Teleguiado:</strong> Dispara 1 míssil ao completar a palavra inteira.</p>
+<p><strong class="text-tertiary">Opção 2 - Canhão Vulcan:</strong> Dispara 1 projétil tracer a cada letra certa. O alvo explode somente ao completar a última letra da palavra!</p>
 <p><strong class="text-tertiary">5 Vidas e Dano Dinâmico:</strong> Cada míssil não abatido colide e consome uma vida, degradando a fuselagem da aeronave (jato 1 até 6).</p>
 </div>
 <button class="w-full py-2.5 bg-tertiary text-black font-headline-sm font-bold rounded-xl hover:bg-cyan-300 transition-all uppercase cursor-pointer text-xs" onclick="document.getElementById('settings-screen').classList.add('hidden');">
@@ -337,55 +374,30 @@
 </div>
 </div>
 </main>
+
 <script>
-    // Vocabulário dinâmico completo de aviação - 100% limpo, sem acentos, com suporte total a palavras com 'V'
     const WORDS = [
-      'FOGO',
-      'VENTO',
-      'VOO',
-      'VELOZ',
-      'VAPOR',
-      'VALE',
-      'VISOR',
-      'PILOTO',
-      'RADAR',
-      'TURBO',
-      'NUVEM',
-      'MIRA',
-      'AERO',
-      'SINAL',
-      'MOTOR',
-      'ALVO',
-      'RAIO',
-      'ASAS',
-      'ROTA',
-      'FLAP'
+      'FOGO', 'VENTO', 'VOO', 'VELOZ', 'VAPOR', 'VALE', 'VISOR', 'PILOTO', 'RADAR',
+      'TURBO', 'NUVEM', 'MIRA', 'AERO', 'SINAL', 'MOTOR', 'ALVO', 'RAIO', 'ASAS', 'ROTA', 'FLAP'
     ];
 
     function normalizeStr(str) {
       if (!str) return '';
       return str.toString()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[̀-ͯ]/g, '')
         .toUpperCase()
         .trim();
     }
 
-    // Gerador de Áudio Sintético Web Audio API (Totalmente nativo)
     class SoundEngine {
-      constructor() {
-        this.ctx = null;
-      }
+      constructor() { this.ctx = null; }
       init() {
         if (!this.ctx) {
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) {
-            this.ctx = new AudioContextClass();
-          }
+          if (AudioContextClass) this.ctx = new AudioContextClass();
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
+        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
       }
       playKeyType() {
         if (!this.ctx) return;
@@ -402,6 +414,23 @@
           gain.connect(this.ctx.destination);
           osc.start(now);
           osc.stop(now + 0.05);
+        } catch(e){}
+      }
+      playVulcanShot() {
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.06);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.06);
         } catch(e){}
       }
       playMistake() {
@@ -445,9 +474,7 @@
           const bufferSize = this.ctx.sampleRate * 0.28;
           const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
           const data = buffer.getChannelData(0);
-          for (let i = 0; i < bufferSize; i++) {
-            data[i] = Math.random() * 2 - 1;
-          }
+          for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
           const noise = this.ctx.createBufferSource();
           noise.buffer = buffer;
           const filter = this.ctx.createBiquadFilter();
@@ -484,7 +511,6 @@
 
     const sound = new SoundEngine();
 
-        // Sprites com DataStore placeholders exatos
     const SPRITE_URLS = {
       jato1: 'jet_aligned_level_1.png',
       jato2: 'jet_aligned_level_2.png',
@@ -496,18 +522,17 @@
       flame: 'https://lh3.googleusercontent.com/aida-public/AB6AXuARfnlFRNZVE8Mw1RDkNydNOg79KKf5ZsDXWL4pCvzsRy-5V-rNdNq3yMxL5YAGpnUSjSszJ7RCrTZnoiGSQnMqOE-VVbwYHERq77pjw0QZc9-biud6FgimToPEqw1sAUd1xYUC_y2kHrgF-E8nRWgDLyF5zPXdxQAB-fSOv3lOZQ8H6VzwgZuWZhb21vlVh4rVg9ZD1-9L3oZP6li8g1e5S3lhVWh0Escf-qjHgeoWugacnFqTZJp9wp1gtdXfeNCNUQ',
       cloud: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAJmDe4HxGTVUWuCTTDt6hAWKyy6diJxiH8IUynijFtC4qNagoURZCbAzKjsTDzkypxyTTm_NqCNde9hlQ7kT763o42MbvhRn6oUIx10Or254GpaohmxyJ1f8bylgCKzHL-F-l7gyFKmZk4Os2dQRmDbA0flse011-rZmFXmSioQdCM1OAeCsbRKg3JoiJ3We3WlFJiR_PYMKPBXgg0dFcsjzH5xjV3XGeCjybxe79NvOckXO1oyZCTlSC3Ht14F8_ogw',
       cloudAlt: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA2-ITezj9oXR8gS1W2tT-bXcZZJ5Vt4g4bCY6KM6jEaAHZp6NnlmTmUU3_vjkRlI0Jg2Tw-Vwuz3zz0rXNhARkDwZCkxObauszss2Ygg6uVDl2D-M9KvSsopNNI_hhk9tQs2Wvlfa1ocIKOWLyTx6LZzr6yfoaohF0qEdDdnyfQL-jlB82btkqFxk4xLjyNa5lHmxU-xMrua_c3TBCgihx3UU2wIJnYlL5e56LGOwTuur0gmPVkJ-Yqc8hPu-M1XuB5w',
-      missileH: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC1BmDZJzX5p3fThdoH-ecowz_gxgGNB5LA4XWkjz-DYCAvFMegnO8Mtge2FVZrHqvOFL-3sQeHXiQSMnm-EsNaOZ1QX-6Z2PIkwBrBbTLWy5MsRAOwz4m6GV6A4mDwpOiR3GKk0To4S3q9mu7f1d0no7GDhtoA49AcBPgcNbfe6VX3415_haikkBinr45CKUIkO0NA7tX4YZp-wPlg4jXoMNnRzmRSsIgcBI9UiNKnlZL80OcW-_JuCU5RttcOE2yONQ',
+      bossShip: 'boss_plane.png',
+      missileH: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="32" viewBox="0 0 100 32"><defs><linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="%23ffffff"/><stop offset="30%" stop-color="%23cbd5e1"/><stop offset="70%" stop-color="%2364748b"/><stop offset="100%" stop-color="%23334155"/></linearGradient><linearGradient id="noseGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="%23f87171"/><stop offset="40%" stop-color="%23dc2626"/><stop offset="100%" stop-color="%23991b1b"/></linearGradient></defs><path d="M 12 6 L 3 0 L 20 8 Z" fill="%231e293b" stroke="%230f172a" stroke-width="1"/><path d="M 12 26 L 3 32 L 20 24 Z" fill="%231e293b" stroke="%230f172a" stroke-width="1"/><rect x="2" y="10" width="8" height="12" rx="2" fill="%230f172a"/><rect x="10" y="8" width="55" height="16" rx="3" fill="url(%23bodyGrad)" stroke="%23475569" stroke-width="1"/><rect x="42" y="8" width="8" height="16" fill="%23f59e0b" stroke="%23d97706" stroke-width="1"/><path d="M 65 8 L 96 16 L 65 24 Z" fill="url(%23noseGrad)" stroke="%23b91c1c" stroke-width="1"/><path d="M 28 8 L 32 2 L 40 8 Z" fill="%23475569"/><path d="M 28 24 L 32 30 L 40 24 Z" fill="%23475569"/></svg>',
       playerMissile: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA5UTLV5VElYIgq3Lcx6jr2gAYIGwXPQErsWjTqdXddL_8v8iKzCEISn_-fqZVy44d694v76bzWuI5FduKz5LsxA59IRGGTd0qZhBvJrr6-SSnrBzvuxw_27B0JqE8hPLASk11klHtJ11H5NFXaPL23JLm3LvGHoS6BCnaRKKKdbDN0tM3xDpvvQL6hjlvBqWWPITx4kh7sC4GC0MBDuAaoDFIVCrPTblKHDj51V5W9Ul-bN8B5YKGWS3tPU2UsghXKfg',
       explosion: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBmALespId7qV87cKasGzmrtA8Z60RfDnNNsyvS8tDnGFk-BhB5OISRV7B4IfVmL4m3e3LcT-7m_lE12ai1eloOFyfz_G8jLrli6R4HeuROwgsxUUu1nyNFiPUniBI_PnDhyaaY2Ta-MSP7KbDHCcTKsjBvtpMNz81du0vvmu9bvTCm_IttLdGitk8JWz8HxeytRTkczj-ieZrouqvEwf6fg_CksiI86to-3p8lwhwQOn97_qiz785LBSynyTP-kpwMsw'
     };
 
-                // Leaderboard com integração ao Google Sheets (Compatível com GET/POST e fallback JSONP)
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8INelrWDJ51f0CfNV3qWQ3oVythO8ROlKGU4_RfUcHGOZ2Ann2Kea9pkGnm46JVqgew/exec';
     const LEADERBOARD_KEY = 'skytype_arcade_lb';
 
     class LeaderboardManager {
       static getList(callback) {
-        // Tenta buscar os dados em tempo real no Google Sheets
         fetch(GOOGLE_SCRIPT_URL + '?action=read')
           .then(res => res.json())
           .then(data => {
@@ -517,14 +542,12 @@
             }
           })
           .catch(err => {
-            console.log('Tentando via GET simples no Google Sheets...', err);
             fetch(GOOGLE_SCRIPT_URL)
               .then(r => r.json())
               .then(data => {
                 if (Array.isArray(data) && callback) callback(data);
               })
               .catch(e => {
-                console.log('Usando cache local do Ranking', e);
                 try {
                   const raw = localStorage.getItem(LEADERBOARD_KEY);
                   if (callback && raw) callback(JSON.parse(raw));
@@ -535,18 +558,11 @@
 
       static saveScore(pilotName, score, abatidos, onDone) {
         const name = (pilotName && pilotName.trim()) ? pilotName.trim() : 'Piloto Ás';
-        
-        // Envio via parâmetros de URL (compatível 100% com Google Apps Script sem bloqueio de CORS)
         const sendUrl = `${GOOGLE_SCRIPT_URL}?nome=${encodeURIComponent(name)}&pontuacao=${encodeURIComponent(score)}&abatidos=${encodeURIComponent(abatidos || 0)}`;
 
-        // 1. Tentar via GET direto no Apps Script (grava instantaneamente)
         fetch(sendUrl, { mode: 'no-cors' })
-          .then(() => {
-            console.log('Recorde enviado para o Google Sheets via GET params!');
-            if (onDone) onDone();
-          })
+          .then(() => { if (onDone) onDone(); })
           .catch(e => {
-            // 2. Se falhar, tenta fallback via POST Form Data
             const params = new URLSearchParams();
             params.append('nome', name);
             params.append('pontuacao', score);
@@ -557,11 +573,7 @@
               mode: 'no-cors',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: params.toString()
-            }).then(() => {
-              if (onDone) onDone();
-            }).catch(err => {
-              if (onDone) onDone();
-            });
+            }).then(() => { if (onDone) onDone(); }).catch(err => { if (onDone) onDone(); });
           });
       }
     }
@@ -571,25 +583,28 @@
         this.canvas = document.getElementById('game-canvas');
         this.ctx = this.canvas.getContext('2d');
         
-        this.state = 'PLAYING';
+        this.state = 'PRE_FLIGHT';
+        this.stage = 1; // Estágio 1: Digitação | Estágio 2: Evasão com Setas
+        this.keys = {};
         this.pilotName = 'PILOTO ÁS';
+        this.controlMode = 'alpha'; // 'alpha' (Palavras) ou 'arrows' (Sequência de Setas)
+        this.weaponMode = 'missile'; // 'missile' (Opção 1) ou 'vulcan' (Opção 2)
         this.score = 0;
         this.destroyedCount = 0;
         this.totalTyped = 0;
         this.correctTyped = 0;
         this.shields = 5;
-        this.missionDuration = 30; // Travessia de 30s
+        this.missionDuration = 30;
         this.elapsedTime = 0;
         
-        // Rolagem acelerada contínua
         this.worldDistance = 16000;
         this.cameraX = 0;
         this.worldSpeed = this.worldDistance / this.missionDuration;
         
-        // Posição de tela do caça
         this.plane = { x: 260, y: 260 };
         this.missiles = [];
-        this.playerMissiles = []; // Minimísseis disparados pelo caça
+        this.playerMissiles = [];
+        this.vulcanBullets = [];
         this.particles = [];
         this.explosions = [];
         this.smokeTrails = [];
@@ -597,16 +612,11 @@
         this.stars = [];
         this.passingClouds = [];
         
-        // Sistema de ID único para alvos
         this.activeTargetId = null;
-        
-        // Frequência de spawn de mísseis
         this.spawnTimer = 400;
         this.spawnInterval = 2000;
-        this.plane = { x: 260, y: Math.floor(this.height * 0.48), vy: 0, vx: 0, rotation: 0, vRot: 0, crashAlpha: 1.0 };
         this.spawnToggle = false;
 
-        // Carregar imagens
         this.images = {};
         this.loadSprites();
 
@@ -614,6 +624,8 @@
         this.initEvents();
 
         this.lastFrameTime = performance.now();
+
+
         requestAnimationFrame((t) => this.renderLoop(t));
       }
 
@@ -629,6 +641,7 @@
           ['flame', SPRITE_URLS.flame],
           ['cloud', SPRITE_URLS.cloud],
           ['cloudAlt', SPRITE_URLS.cloudAlt],
+          ['bossShip', SPRITE_URLS.bossShip],
           ['missileH', SPRITE_URLS.missileH],
           ['playerMissile', SPRITE_URLS.playerMissile],
           ['explosion', SPRITE_URLS.explosion]
@@ -660,7 +673,6 @@
         this.plane.x = Math.max(180, Math.min(this.width * 0.28, 320));
         this.plane.y = flightY;
 
-        // Estrelas multicamada para parallax scrolling contínuo
         if (this.stars.length === 0) {
           for (let i = 0; i < 180; i++) {
             this.stars.push({
@@ -673,7 +685,6 @@
           }
         }
 
-        // Nuvens passando continuamente em parallax
         if (this.passingClouds.length === 0) {
           for (let i = 0; i < 22; i++) {
             this.passingClouds.push({
@@ -704,18 +715,17 @@
         this.missionDuration = 30;
         this.missiles = [];
         this.playerMissiles = [];
+        this.vulcanBullets = [];
         this.smokeTrails = [];
         this.debris = [];
         this.particles = [];
         this.explosions = [];
-        this.debris = [];
         this.activeTargetId = null;
         this.spawnTimer = 400;
         this.spawnInterval = 2000;
         this.plane = { x: 260, y: Math.floor(this.height * 0.48), vy: 0, vx: 0, rotation: 0, vRot: 0, crashAlpha: 1.0 };
 
         this.updateLastKeyDisplay('-');
-
         this.resize();
 
         document.getElementById('gameover-screen').classList.add('hidden');
@@ -741,6 +751,7 @@
 
       updateShieldsHUD() {
         const hud = document.getElementById('hud-shields');
+        if (!hud) return;
         let html = '';
         for (let i = 0; i < 5; i++) {
           const filled = i < this.shields;
@@ -748,33 +759,6 @@
           html += `<span class="material-symbols-outlined ${color} text-[20px]" style="font-variation-settings: 'FILL' ${filled ? 1 : 0};">favorite</span>`;
         }
         hud.innerHTML = html;
-      }
-
-                  submitScore(type) {
-        const inputId = type === 'go' ? 'go-pilot-name' : 'vic-pilot-name';
-        const btnId = type === 'go' ? 'go-save-btn' : 'vic-save-btn';
-        const msgId = type === 'go' ? 'go-save-msg' : 'vic-save-msg';
-        
-        const inputEl = document.getElementById(inputId);
-        const btnEl = document.getElementById(btnId);
-        const msgEl = document.getElementById(msgId);
-        
-        const name = inputEl ? inputEl.value.trim() : '';
-        if (!name) {
-          alert('Por favor, digite seu nome de piloto antes de salvar!');
-          return;
-        }
-
-        btnEl.disabled = true;
-        btnEl.innerText = 'Salvando...';
-
-        LeaderboardManager.saveScore(name, this.score, this.destroyedCount, () => {
-          btnEl.innerText = 'Salvo!';
-          msgEl.classList.remove('hidden');
-          setTimeout(() => {
-            this.showLeaderboard();
-          }, 800);
-        });
       }
 
       showLeaderboard() {
@@ -809,30 +793,46 @@
         });
       }
 
-      // Spawna mísseis com palavras variadas do vocabulário, incluindo 'V' (VENTO, VOO, VELOZ, VAPOR, VALE, VISOR, etc.)
       spawnMissile() {
         const activeMissiles = this.missiles.filter(m => !m.destroyed && !m.exploding);
-        if (activeMissiles.length >= 4) return;
+        const maxAllowed = (this.stage === 3) ? 5 : ((this.stage === 2) ? 4 : 4);
+        if (activeMissiles.length >= maxAllowed) return;
 
-        // Evitar se possível duplicar a primeira letra de um míssil já em tela para facilitar a mira do jogador
-        const existingInitialLetters = new Set(activeMissiles.map(m => m.normWord.charAt(0)));
-        let candidates = WORDS.filter(w => !existingInitialLetters.has(normalizeStr(w).charAt(0)));
-        if (candidates.length === 0) candidates = WORDS;
-
-        const rawWord = candidates[Math.floor(Math.random() * candidates.length)];
-        const cleanWord = normalizeStr(rawWord);
+        let cleanWord = '';
+        if (this.controlMode === 'arrows') {
+          const arrowPool = ['U', 'D', 'L', 'R'];
+          const seq = [];
+          for (let i = 0; i < 3; i++) {
+            seq.push(arrowPool[Math.floor(Math.random() * arrowPool.length)]);
+          }
+          cleanWord = seq.join('');
+        } else {
+          const existingInitialLetters = new Set(activeMissiles.map(m => m.normWord.charAt(0)));
+          let candidates = WORDS.filter(w => !existingInitialLetters.has(normalizeStr(w).charAt(0)));
+          if (candidates.length === 0) candidates = WORDS;
+          const rawWord = candidates[Math.floor(Math.random() * candidates.length)];
+          cleanWord = normalizeStr(rawWord);
+        }
 
         this.spawnToggle = !this.spawnToggle;
         const comesFromTop = this.spawnToggle;
 
         const aheadMinX = this.plane.x + 240;
         const aheadMaxX = Math.max(aheadMinX + 160, this.width - 60);
-        const spawnX = Math.min(this.width - 50, aheadMinX + Math.random() * (aheadMaxX - aheadMinX));
-        const spawnY = comesFromTop ? -60 : (this.height + 60);
+        let spawnX, spawnY;
+        if (this.stage === 3) {
+          // Na Fase 3 (Nave Mãe), os mísseis saem diretamente das escotilhas da Nave Mãe no canto direito!
+          spawnX = this.width - 160;
+          spawnY = (this.bossY || (this.height * 0.45)) + (Math.random() - 0.5) * 60;
+        } else {
+          spawnX = Math.min(this.width - 50, aheadMinX + Math.random() * (aheadMaxX - aheadMinX));
+          spawnY = comesFromTop ? -60 : (this.height + 60);
+        }
 
         const progressRatio = Math.min(1.0, this.elapsedTime / this.missionDuration);
-        const baseSpeed = 1.40 + (progressRatio * 1.50) + Math.random() * 0.30;
-        const accelRate = 0.045 + (progressRatio * 0.040); // Aceleração física contínua por segundo 
+        const stageMultiplier = (this.stage === 3) ? 1.45 : ((this.stage === 2) ? 1.15 : 1.0);
+        const baseSpeed = (1.40 + (progressRatio * 1.50) + Math.random() * 0.30) * stageMultiplier;
+        const accelRate = (0.045 + (progressRatio * 0.040)) * stageMultiplier;
         const targetAngle = Math.atan2(this.plane.y - spawnY, this.plane.x - spawnX);
 
         this.missiles.push({
@@ -858,8 +858,7 @@
       createExplosion(x, y, scale = 1.0) {
         sound.playExplosion();
         this.explosions.push({
-          x: x,
-          y: y,
+          x: x, y: y,
           size: 80 * scale,
           currentScale: 0.2,
           maxScale: 1.3 * scale,
@@ -873,13 +872,27 @@
           const spd = Math.random() * 4.4 + 1.6;
           const colors = ['#f59e0b', '#ef4444', '#00dbe9', '#fbbf24', '#ffb1c5'];
           this.particles.push({
-            x: x,
-            y: y,
+            x: x, y: y,
             vx: Math.cos(ang) * spd,
             vy: Math.sin(ang) * spd,
             alpha: 1,
             color: colors[Math.floor(Math.random() * colors.length)],
             size: Math.random() * 3.8 + 2
+          });
+        }
+      }
+
+      createSparks(x, y) {
+        for (let i = 0; i < 8; i++) {
+          const ang = Math.random() * Math.PI * 2;
+          const spd = Math.random() * 3.0 + 1.0;
+          this.particles.push({
+            x: x, y: y,
+            vx: Math.cos(ang) * spd,
+            vy: Math.sin(ang) * spd,
+            alpha: 0.9,
+            color: '#ffb1c5',
+            size: Math.random() * 2.5 + 1.5
           });
         }
       }
@@ -910,16 +923,27 @@
         const initialAngle = Math.atan2(target.y - startY, target.x - startX);
 
         this.playerMissiles.push({
-          x: startX,
-          y: startY,
+          x: startX, y: startY,
           targetId: target.id,
-          targetX: target.x,
-          targetY: target.y,
+          targetX: target.x, targetY: target.y,
           speed: 18.0,
           angle: initialAngle,
           trailTimer: 0,
-          width: 32,
-          height: 12
+          width: 32, height: 12
+        });
+      }
+
+      launchVulcanBullet(target, isLastChar) {
+        sound.playVulcanShot();
+        const startX = this.plane.x + 65;
+        const startY = this.plane.y + 2;
+
+        this.vulcanBullets.push({
+          x: startX, y: startY,
+          targetId: target.id,
+          targetX: target.x, targetY: target.y,
+          speed: 24.0,
+          isLastChar: isLastChar
         });
       }
 
@@ -930,26 +954,21 @@
         this.plane.rotation = Math.atan2(this.plane.vy, this.plane.vx);
         this.plane.crashAlpha = 1.0;
 
-        // Três explosões encadeadas violentas
         this.createExplosion(this.plane.x, this.plane.y, 3.2);
         this.createExplosion(this.plane.x - 30, this.plane.y + 20, 2.2);
         this.createExplosion(this.plane.x + 40, this.plane.y - 20, 2.5);
 
-        // Destroços mantêm a inércia para a direita e caem em arcos parabólicos puxados pela gravidade
         this.debris = [];
         const colors = ['#00dbe9', '#ef4444', '#f59e0b', '#334155', '#94a3b8', '#ffffff', '#ff7700'];
         for (let i = 0; i < 22; i++) {
-          const forwardVelocity = Math.random() * 7.5 + 2.0; // Embalagem para a direita pelo voo do caça
-          const verticalPop = (Math.random() - 0.5) * 6.0 - 1.5; // Pequeno impulso inicial da explosão
-
           this.debris.push({
             x: this.plane.x + (Math.random() - 0.5) * 35,
             y: this.plane.y + (Math.random() - 0.5) * 25,
-            vx: forwardVelocity,
-            vy: verticalPop,
+            vx: Math.random() * 7.5 + 2.0,
+            vy: (Math.random() - 0.5) * 6.0 - 1.5,
             rotation: Math.random() * Math.PI * 2,
             vRot: (Math.random() - 0.5) * 0.32,
-            gravity: 0.58 + Math.random() * 0.22, // Gravidade forte acelerando a queda
+            gravity: 0.58 + Math.random() * 0.22,
             w: Math.random() * 24 + 10,
             h: Math.random() * 14 + 6,
             color: colors[Math.floor(Math.random() * colors.length)],
@@ -967,6 +986,26 @@
         }, 2400);
       }
 
+            triggerBossExplosion() {
+        if (this.bossExploding) return;
+        this.bossExploding = true;
+        this.bossExplosionTimer = 3.5;
+        this.activeTargetId = null;
+        this.missiles = [];
+        try { sound.playExplosion(); } catch(e){}
+
+        for (let i = 0; i < 25; i++) {
+          setTimeout(() => {
+            if (!this.bossY) return;
+            const bossX = this.width - 140;
+            const exX = bossX + (Math.random() - 0.5) * 220;
+            const exY = this.bossY + (Math.random() - 0.5) * 110;
+            this.createExplosion(exX, exY, 2.0 + Math.random() * 1.5);
+            try { sound.playExplosion(); } catch(e){}
+          }, i * 110);
+        }
+      }
+
       victory() {
         this.state = 'VICTORY';
         LeaderboardManager.saveScore(this.pilotName, this.score, this.destroyedCount);
@@ -977,56 +1016,53 @@
         document.getElementById('victory-screen').classList.remove('hidden');
       }
 
-      // PROCESSADOR CENTRAL E RESILIENTE DE LETRAS (COM TRATAMENTO UNIVERSAL INCLUINDO 'V')
       handleLetter(letter) {
         this.updateLastKeyDisplay(letter);
         this.totalTyped++;
 
-        // 1. Verificar se o alvo atual ainda é válido
         if (this.activeTargetId) {
           const target = this.missiles.find(m => m.id === this.activeTargetId && !m.exploding && !m.destroyed);
-          if (!target) {
-            this.activeTargetId = null;
-          }
+          if (!target) this.activeTargetId = null;
         }
 
-        // 2. Se temos um alvo ativo, validar o próximo caractere
         if (this.activeTargetId) {
           const target = this.missiles.find(m => m.id === this.activeTargetId && !m.exploding && !m.destroyed);
           if (target) {
             const expectedChar = target.normWord[target.typedIndex];
             if (letter === expectedChar) {
-              // Caractere correto
               this.correctTyped++;
               target.typedIndex++;
-              sound.playKeyType();
+              const isLastChar = (target.typedIndex >= target.normWord.length);
 
-              if (target.typedIndex >= target.normWord.length) {
-                this.launchPlayerMissile(target);
+              if (this.weaponMode === 'vulcan') {
+                this.launchVulcanBullet(target, isLastChar);
+              } else {
+                sound.playKeyType();
+                if (isLastChar) {
+                  this.launchPlayerMissile(target);
+                }
+              }
+
+              if (isLastChar) {
                 this.score += target.word.length * 120;
                 this.destroyedCount++;
                 this.activeTargetId = null;
-                target.typedIndex = 0;
               }
               return;
             } else {
-              // Letra errada no alvo ativo
               sound.playMistake();
               target.errorShakeUntil = performance.now() + 100;
               target.typedIndex = 0;
               this.activeTargetId = null;
-              // Continua para tentar engajar outro alvo com esta mesma letra digitada
             }
           } else {
             this.activeTargetId = null;
           }
         }
 
-        // 3. Se nenhum alvo estiver ativo, procurar por um míssil cuja primeira letra seja esta tecla (ex: 'V' -> VENTO, VOO, VELOZ...)
         if (!this.activeTargetId) {
           const candidates = this.missiles.filter(m => !m.exploding && !m.destroyed && !m.targetedByPlayer && m.normWord.startsWith(letter));
           if (candidates.length > 0) {
-            // Escolhe o míssil mais próximo da aeronave
             candidates.sort((a, b) => {
               const distA = Math.hypot(this.plane.x - a.x, this.plane.y - a.y);
               const distB = Math.hypot(this.plane.x - b.x, this.plane.y - b.y);
@@ -1037,14 +1073,22 @@
             this.activeTargetId = newTarget.id;
             newTarget.typedIndex = 1;
             this.correctTyped++;
-            sound.playKeyType();
 
-            if (newTarget.typedIndex >= newTarget.normWord.length) {
-              this.launchPlayerMissile(newTarget);
+            const isLastChar = (newTarget.typedIndex >= newTarget.normWord.length);
+
+            if (this.weaponMode === 'vulcan') {
+              this.launchVulcanBullet(newTarget, isLastChar);
+            } else {
+              sound.playKeyType();
+              if (isLastChar) {
+                this.launchPlayerMissile(newTarget);
+              }
+            }
+
+            if (isLastChar) {
               this.score += newTarget.word.length * 120;
               this.destroyedCount++;
               this.activeTargetId = null;
-              newTarget.typedIndex = 0;
             }
           } else {
             sound.playMistake();
@@ -1055,25 +1099,15 @@
       handleKeyDown(e) {
         if (this.state !== 'PLAYING') return;
         if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-        // Foco de garantia contínuo
-        // Foco permitido nos inputs
-
-        // Não interceptar comandos do sistema com modificadores (Ctrl+C, Cmd+R, etc.)
-        if (e.ctrlKey || e.metaKey || e.altKey) {
-          return;
-        }
-
-        // Backspace para desmarcar ou retroceder letra
         if (e.key === 'Backspace') {
           e.preventDefault();
           if (this.activeTargetId) {
             const target = this.missiles.find(m => m.id === this.activeTargetId && !m.exploding && !m.destroyed);
             if (target && target.typedIndex > 0) {
               target.typedIndex--;
-              if (target.typedIndex === 0) {
-                this.activeTargetId = null;
-              }
+              if (target.typedIndex === 0) this.activeTargetId = null;
             } else {
               this.activeTargetId = null;
             }
@@ -1081,7 +1115,6 @@
           return;
         }
 
-        // Escape ou Espaço para destravar a mira
         if (e.key === 'Escape' || e.key === ' ' || e.code === 'Space') {
           e.preventDefault();
           if (this.activeTargetId) {
@@ -1092,7 +1125,19 @@
           return;
         }
 
-        // Captura direta e universal de letras A até Z (incluindo V, v)
+        // Mapeamento de setas
+        let arrowCode = null;
+        if (e.key === 'ArrowUp' || e.code === 'ArrowUp' || e.key === 'w' || e.key === 'W') arrowCode = 'U';
+        else if (e.key === 'ArrowDown' || e.code === 'ArrowDown' || e.key === 's' || e.key === 'S') arrowCode = 'D';
+        else if (e.key === 'ArrowLeft' || e.code === 'ArrowLeft' || e.key === 'a' || e.key === 'A') arrowCode = 'L';
+        else if (e.key === 'ArrowRight' || e.code === 'ArrowRight' || e.key === 'd' || e.key === 'D') arrowCode = 'R';
+
+        if (this.controlMode === 'arrows' && arrowCode) {
+          e.preventDefault();
+          this.handleLetter(arrowCode);
+          return;
+        }
+
         const key = e.key.toUpperCase();
         if (key.length === 1 && key >= 'A' && key <= 'Z') {
           e.preventDefault();
@@ -1100,24 +1145,61 @@
         }
       }
 
+      
+      startStage2() {
+        this.stage = 2;
+        this.shields = 3; // Estágio 2: Apenas 3 vidas para desviar dos mísseis
+        this.elapsedTime = 0;
+        this.missionDuration = 20; // 20 segundos de evasão intensa
+        this.missiles = [];
+        this.playerMissiles = [];
+        this.vulcanBullets = [];
+        this.activeTargetId = null;
+        this.updateShieldsHUD();
+
+        // Banner visual de transição de estágio
+        const hudStage = document.getElementById('hud-pilot-display');
+        if (hudStage) {
+          hudStage.innerText = `${this.pilotName.toUpperCase()} [ESTÁGIO 2: EVASÃO Setas ⬆⬇⬅➡]`;
+        }
+      }
+
+      updateStage2Movement() {
+        if (this.stage !== 2 || this.state !== 'PLAYING') return;
+
+        const moveSpeed = 7.5;
+        if (this.keys['ArrowUp'] || this.keys['KeyW']) {
+          this.plane.y = Math.max(60, this.plane.y - moveSpeed);
+        }
+        if (this.keys['ArrowDown'] || this.keys['KeyS']) {
+          this.plane.y = Math.min(this.height - 60, this.plane.y + moveSpeed);
+        }
+        if (this.keys['ArrowLeft'] || this.keys['KeyA']) {
+          this.plane.x = Math.max(80, this.plane.x - moveSpeed);
+        }
+        if (this.keys['ArrowRight'] || this.keys['KeyD']) {
+          this.plane.x = Math.min(this.width - 120, this.plane.x + moveSpeed);
+        }
+      }
+
       renderLoop(timestamp) {
         const dt = Math.min(timestamp - this.lastFrameTime, 100);
         this.lastFrameTime = timestamp;
+        if (this.transitionBannerTimer && this.transitionBannerTimer > 0) {
+          this.transitionBannerTimer -= dt / 1000;
+        }
 
-        // Limpeza de alvo órfão a cada ciclo de render
         if (this.activeTargetId) {
           const exists = this.missiles.some(m => m.id === this.activeTargetId && !m.destroyed && !m.exploding);
           if (!exists) this.activeTargetId = null;
         }
 
-        // Flicker / oscilação da chama animada
         const flameCycle = (timestamp % 280) / 280;
         const flamePulseX = 1 + Math.sin(flameCycle * Math.PI * 2) * 0.15;
         const flamePulseY = 1 - Math.sin(flameCycle * Math.PI * 2) * 0.15;
         const flameOpacity = 0.90 + Math.sin(flameCycle * Math.PI * 2) * 0.10;
 
-        // Atualização da Lógica
-                if (this.state === 'GAMEOVER') {
+        if (this.state === 'GAMEOVER') {
           this.plane.vy += (dt / 16.6) * 0.42;
           this.plane.vx *= 0.992;
           this.plane.x += (dt / 16.6) * this.plane.vx;
@@ -1145,7 +1227,6 @@
           this.plane.x += (dt / 16.6) * 22;
           this.cameraX = this.worldDistance + (this.plane.x - 260);
 
-          // Partículas de rastro de turbo em ciano e laranja
           if (Math.random() < 0.95) {
             this.particles.push({
               x: this.plane.x - 90,
@@ -1159,15 +1240,49 @@
           }
 
           if (this.plane.x > this.width + 250) {
-            this.victory();
+            if (this.stage === 1) {
+              // Concluiu Fase 1 -> Avança para Fase 2
+              this.stage = 2;
+              this.state = 'PLAYING';
+              this.elapsedTime = 0;
+              this.missionDuration = 30;
+              this.plane.x = 260;
+              this.missiles = [];
+              this.playerMissiles = [];
+              this.vulcanBullets = [];
+              this.activeTargetId = null;
+              this.transitionBannerTimer = 3.5;
+
+              const hudPilot = document.getElementById('hud-pilot-display');
+              if (hudPilot) hudPilot.innerText = `${this.pilotName.toUpperCase()} [FASE 02/03 - TEMPESTADE DE MÍSSEIS]`;
+            } else if (this.stage === 2) {
+              // Concluiu Fase 2 -> Avança para Fase 3 (Nave Mãe Chefão Final)
+              this.stage = 3;
+              this.state = 'PLAYING';
+              this.elapsedTime = 0;
+              this.missionDuration = 35;
+              this.plane.x = 260;
+              this.bossY = this.height * 0.45;
+              this.bossExploding = false;
+              this.missiles = [];
+              this.playerMissiles = [];
+              this.vulcanBullets = [];
+              this.activeTargetId = null;
+              this.transitionBannerTimer = 4.0;
+
+              const hudPilot = document.getElementById('hud-pilot-display');
+              if (hudPilot) hudPilot.innerText = `${this.pilotName.toUpperCase()} [FASE 03/03 - CAÇA BOSS CHEFÃO]`;
+            } else {
+              // Concluiu Fase 3 (TURBO pós-explosão) -> Vitória Final!
+              this.victory();
+            }
           }
         }
 
-        if (this.state === 'PLAYING') {
+        if (this.state === 'PLAYING' || this.state === 'BOSS_EXPLODING') {
           this.elapsedTime += dt / 1000;
           this.cameraX = (this.elapsedTime / this.missionDuration) * this.worldDistance;
 
-          // Contagem regressiva de 30s
           const timeLeft = Math.max(0, Math.ceil(this.missionDuration - this.elapsedTime));
           document.getElementById('hud-timer').innerText = `${timeLeft}s`;
 
@@ -1180,22 +1295,29 @@
           const flightY = Math.floor(this.height * 0.48);
           this.plane.y = flightY + Math.sin(timestamp * 0.0035) * 6;
 
-          // Vitória aos 30s -> Engajar Turbo
           if (this.elapsedTime >= this.missionDuration) {
-            this.state = 'TURBO';
-            this.activeTargetId = null;
-            try { sound.playShoot(); } catch(e){}
+            if (this.stage === 3) {
+              // Na Fase 3 (Boss): Zerou o tempo -> Dispara a explosão do Boss e transita para TURBO!
+              this.triggerBossExplosion();
+              this.state = 'TURBO';
+              this.activeTargetId = null;
+              try { sound.playShoot(); } catch(e){}
+            } else {
+              // Nas Fases 1 e 2 -> Ativa o TURBO acelerando pela tela!
+              this.state = 'TURBO';
+              this.activeTargetId = null;
+              try { sound.playShoot(); } catch(e){}
+            }
           }
 
-          // Spawns regulares
           this.spawnTimer += dt;
           if (this.spawnTimer >= this.spawnInterval && progress < 92) {
             this.spawnMissile();
             this.spawnTimer = 0;
-            this.spawnInterval = 1850 + Math.random() * 450;
+            const minInterval = (this.stage === 3) ? 1050 : ((this.stage === 2) ? 1550 : 1850);
+            this.spawnInterval = minInterval + Math.random() * 350;
           }
 
-          // Atualizar mísseis inimigos
           for (let m of this.missiles) {
             if (m.destroyed) continue;
             m.age += dt / 1000;
@@ -1204,30 +1326,26 @@
             const dy = this.plane.y - m.y;
             const dist = Math.hypot(dx, dy);
 
-            // Impacto fatal no caça
             if (dist < 46 && !m.exploding) {
               m.destroyed = true;
-              if (this.activeTargetId === m.id) {
-                this.activeTargetId = null;
-              }
+              if (this.activeTargetId === m.id) this.activeTargetId = null;
               this.createExplosion(m.x, m.y, 1.25);
               this.triggerDamage();
               continue;
             }
 
-            // Curva contínua em direção ao caça
             const targetAngle = Math.atan2(dy, dx);
             let diff = targetAngle - m.angle;
             while (diff > Math.PI) diff -= Math.PI * 2;
             while (diff < -Math.PI) diff += Math.PI * 2;
 
             m.angle += diff * m.turnRate * (dt / 16.6);
-            m.speed += m.accelRate * (dt / 1000); // Aceleração física dinâmica contínua
+            m.speed += m.accelRate * (dt / 1000);
             m.x += Math.cos(m.angle) * m.speed * (dt / 16.6);
             m.y += Math.sin(m.angle) * m.speed * (dt / 16.6);
           }
 
-          // Atualizar minimísseis teleguiados do jogador
+          // Atualizar minimísseis teleguiados (Opção 1)
           for (let i = this.playerMissiles.length - 1; i >= 0; i--) {
             const pm = this.playerMissiles[i];
             const target = this.missiles.find(m => m.id === pm.targetId);
@@ -1244,15 +1362,13 @@
 
             pm.angle = Math.atan2(dy, dx);
 
-            // Rastro de fumaça e faíscas
             pm.trailTimer += dt;
             if (pm.trailTimer >= 16) {
               pm.trailTimer = 0;
               const tailX = pm.x - Math.cos(pm.angle) * (pm.width * 0.5 + 8);
               const tailY = pm.y - Math.sin(pm.angle) * (pm.width * 0.5 + 8);
               this.smokeTrails.push({
-                x: tailX,
-                y: tailY,
+                x: tailX, y: tailY,
                 vx: -Math.cos(pm.angle) * 2.2 + (Math.random() - 0.5) * 0.9,
                 vy: -Math.sin(pm.angle) * 2.2 + (Math.random() - 0.5) * 0.9,
                 alpha: 0.9,
@@ -1264,9 +1380,7 @@
             if (dist <= Math.max(step * 1.25, 26)) {
               if (target && !target.destroyed) {
                 target.destroyed = true;
-                if (this.activeTargetId === target.id) {
-                  this.activeTargetId = null;
-                }
+                if (this.activeTargetId === target.id) this.activeTargetId = null;
               }
               this.createExplosion(pm.targetX, pm.targetY, 1.2);
               this.playerMissiles.splice(i, 1);
@@ -1277,13 +1391,46 @@
             pm.y += Math.sin(pm.angle) * step;
           }
 
+          // Atualizar projéteis Vulcan (Opção 2 - Projéteis Tracer por letra)
+          for (let i = this.vulcanBullets.length - 1; i >= 0; i--) {
+            const vb = this.vulcanBullets[i];
+            const target = this.missiles.find(m => m.id === vb.targetId);
+
+            if (target && !target.destroyed) {
+              vb.targetX = target.x;
+              vb.targetY = target.y;
+            }
+
+            const dx = vb.targetX - vb.x;
+            const dy = vb.targetY - vb.y;
+            const dist = Math.hypot(dx, dy);
+            const step = vb.speed * (dt / 16.6);
+
+            if (dist <= Math.max(step * 1.25, 24)) {
+              if (vb.isLastChar) {
+                if (target && !target.destroyed) {
+                  target.destroyed = true;
+                  if (this.activeTargetId === target.id) this.activeTargetId = null;
+                }
+                this.createExplosion(vb.targetX, vb.targetY, 1.2);
+              } else {
+                this.createSparks(vb.targetX, vb.targetY);
+              }
+              this.vulcanBullets.splice(i, 1);
+              continue;
+            }
+
+            const angle = Math.atan2(dy, dx);
+            vb.x += Math.cos(angle) * step;
+            vb.y += Math.sin(angle) * step;
+          }
+
           this.missiles = this.missiles.filter(m => !m.destroyed && m.x >= -120 && m.y >= -160 && m.y <= this.height + 160);
         }
 
-        // ================= DESENHO PANORÂMICO COM ROLAGEM LATERAL =================
+        // ================= DESENHO PANORÂMICO =================
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Fundo Gradiente Cósmico
         const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
         grad.addColorStop(0, '#070b1a');
         grad.addColorStop(0.45, '#0d1733');
@@ -1291,7 +1438,6 @@
         this.ctx.fillStyle = grad;
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Estrelas com Parallax lateral contínuo acelerado
         this.ctx.fillStyle = '#ffffff';
         const starScrollSpeed = (this.worldSpeed * (dt / 1000));
         for (let s of this.stars) {
@@ -1316,7 +1462,6 @@
         }
         this.ctx.globalAlpha = 1;
 
-        // Nuvem A (Origem)
         const cloudW = Math.min(260, this.width * 0.26);
         const cloudH = cloudW * 0.52;
         const flightY = Math.floor(this.height * 0.48);
@@ -1324,32 +1469,18 @@
         const nuvemA_ScreenX = 45 - this.cameraX;
         if (nuvemA_ScreenX + cloudW > -100) {
           this.ctx.save();
-          if (cloudSprite) {
-            this.ctx.drawImage(cloudSprite, nuvemA_ScreenX, flightY - cloudH * 0.48, cloudW, cloudH);
-          }
-          this.ctx.font = 'bold 11px "Space Grotesk", sans-serif';
-          this.ctx.fillStyle = 'rgba(125, 244, 255, 0.7)';
-          this.ctx.textAlign = 'center';
-          // Texto removido
+          if (cloudSprite) this.ctx.drawImage(cloudSprite, nuvemA_ScreenX, flightY - cloudH * 0.48, cloudW, cloudH);
           this.ctx.restore();
         }
 
-        // Nuvem B (Destino - Pouso aos 30s)
         const nuvemB_TargetX = this.width - cloudW - 60;
         const remainingDist = (this.worldDistance - this.cameraX);
         const nuvemB_ScreenX = nuvemB_TargetX + remainingDist * 0.22;
 
         this.ctx.save();
-        if (cloudSprite) {
-          this.ctx.drawImage(cloudSprite, nuvemB_ScreenX, flightY - cloudH * 0.48, cloudW, cloudH);
-        }
-        this.ctx.font = 'bold 11px "Space Grotesk", sans-serif';
-        this.ctx.fillStyle = 'rgba(125, 244, 255, 0.85)';
-        this.ctx.textAlign = 'center';
-        // Texto removido
+        if (cloudSprite) this.ctx.drawImage(cloudSprite, nuvemB_ScreenX, flightY - cloudH * 0.48, cloudW, cloudH);
         this.ctx.restore();
 
-        // Speedlines
         this.ctx.save();
         this.ctx.strokeStyle = 'rgba(0, 219, 233, 0.32)';
         this.ctx.lineWidth = 1.6;
@@ -1363,17 +1494,11 @@
         }
         this.ctx.restore();
 
-        // Rastro de fumaça e faíscas
         for (let i = this.smokeTrails.length - 1; i >= 0; i--) {
           const sm = this.smokeTrails[i];
-          sm.x += sm.vx;
-          sm.y += sm.vy;
-          sm.alpha -= 0.048;
-          sm.size += 0.26;
-          if (sm.alpha <= 0) {
-            this.smokeTrails.splice(i, 1);
-            continue;
-          }
+          sm.x += sm.vx; sm.y += sm.vy;
+          sm.alpha -= 0.048; sm.size += 0.26;
+          if (sm.alpha <= 0) { this.smokeTrails.splice(i, 1); continue; }
           this.ctx.save();
           this.ctx.globalAlpha = sm.alpha;
           this.ctx.fillStyle = sm.color;
@@ -1383,16 +1508,11 @@
           this.ctx.restore();
         }
 
-        // Partículas de faíscas da explosão
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const p = this.particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
+          p.x += p.vx; p.y += p.vy;
           p.alpha -= 0.038;
-          if (p.alpha <= 0) {
-            this.particles.splice(i, 1);
-            continue;
-          }
+          if (p.alpha <= 0) { this.particles.splice(i, 1); continue; }
           this.ctx.save();
           this.ctx.globalAlpha = p.alpha;
           this.ctx.fillStyle = p.color;
@@ -1402,7 +1522,6 @@
           this.ctx.restore();
         }
 
-        // ================= DESTROÇOS ESPALHADOS DA EXPLOSÃO DO CAÇA =================
         for (let i = this.debris.length - 1; i >= 0; i--) {
           const d = this.debris[i];
           d.x += d.vx * (dt / 16.6);
@@ -1413,14 +1532,12 @@
           d.alpha -= (dt / 1000) * 0.35;
 
           if (d.y > this.height + 150 || d.alpha <= 0) {
-            this.debris.splice(i, 1);
-            continue;
+            this.debris.splice(i, 1); continue;
           }
 
           if (Math.random() < 0.65) {
             this.particles.push({
-              x: d.x,
-              y: d.y,
+              x: d.x, y: d.y,
               vx: (Math.random() - 0.5) * 1.5,
               vy: (Math.random() - 0.5) * 1.5 - 1.0,
               alpha: d.alpha * 0.8,
@@ -1438,7 +1555,6 @@
           this.ctx.lineWidth = 1.2;
           this.ctx.shadowColor = d.color;
           this.ctx.shadowBlur = 8;
-
           this.ctx.beginPath();
           if (d.shardType === 0) {
             this.ctx.moveTo(d.w / 2, 0);
@@ -1459,7 +1575,6 @@
           this.ctx.restore();
         }
 
-        // Explosões
         for (let i = this.explosions.length - 1; i >= 0; i--) {
           const exp = this.explosions[i];
           exp.elapsed += dt;
@@ -1468,8 +1583,7 @@
           exp.alpha = 1 - prog;
 
           if (prog >= 1) {
-            this.explosions.splice(i, 1);
-            continue;
+            this.explosions.splice(i, 1); continue;
           }
 
           this.ctx.save();
@@ -1479,7 +1593,6 @@
           const currentH = exp.size * exp.currentScale;
 
           const expImg = (this.images.explosion && this.images.explosion.loaded) ? this.images.explosion.img : null;
-
           if (expImg) {
             this.ctx.drawImage(expImg, -currentW / 2, -currentH / 2, currentW, currentH);
           } else {
@@ -1491,11 +1604,10 @@
           this.ctx.restore();
         }
 
-        // Imagem da chama de propulsão reutilizável em todos os mísseis
         const flameItem = this.images.flame;
         const hasFlame = flameItem && flameItem.loaded;
 
-        // ================= DESENHO DOS MINIMÍSSEIS DISPARADOS PELO CAÇA =================
+        // Desenhar Minimísseis do Jogador (Opção 1)
         const playerMissileImg = (this.images.playerMissile && this.images.playerMissile.loaded) 
           ? this.images.playerMissile.img 
           : ((this.images.missileH && this.images.missileH.loaded) ? this.images.missileH.img : null);
@@ -1505,7 +1617,6 @@
           this.ctx.translate(pm.x, pm.y);
           this.ctx.rotate(pm.angle);
 
-          // Chama animada na traseira do minimíssil
           if (hasFlame) {
             const mFlameW = 34 * flamePulseX;
             const mFlameH = 14 * flamePulseY;
@@ -1517,7 +1628,6 @@
             this.ctx.restore();
           }
 
-          // Corpo do minimíssil
           this.ctx.shadowColor = '#00dbe9';
           this.ctx.shadowBlur = 10;
 
@@ -1531,7 +1641,18 @@
           this.ctx.restore();
         }
 
-        // ================= DESENHO DO CAÇA E CHAMA DE PÓS-COMBUSTÃO =================
+        // Desenhar Projéteis Tracer Vulcan (Opção 2)
+        for (let vb of this.vulcanBullets) {
+          this.ctx.save();
+          this.ctx.fillStyle = '#ffb1c5';
+          this.ctx.shadowColor = '#ffb1c5';
+          this.ctx.shadowBlur = 12;
+          this.ctx.beginPath();
+          this.ctx.arc(vb.x, vb.y, 4, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
         const pW = 230;
         const pH = 76.7;
         const nozzleLocalX = -pW * 0.48;
@@ -1542,17 +1663,13 @@
           this.ctx.save();
           this.ctx.globalAlpha = Math.max(0, this.plane.crashAlpha !== undefined ? this.plane.crashAlpha : 1.0);
           this.ctx.translate(this.plane.x, this.plane.y);
-          if (this.plane.rotation) {
-            this.ctx.rotate(this.plane.rotation);
-          }
+          if (this.plane.rotation) this.ctx.rotate(this.plane.rotation);
           if (brokenImg) {
-            const bW = 250;
-            const bH = 80;
+            const bW = 250; const bH = 80;
             this.ctx.drawImage(brokenImg, -bW / 2, -bH / 2, bW, bH);
           }
           this.ctx.restore();
         } else {
-          // 1. Chama animada no pós-combustor do caça (Com suporte a Turbo Final)
           if (hasFlame) {
             const isTurbo = (this.state === 'TURBO');
             const pulse = Math.sin(timestamp * 0.038) * 0.08 + Math.cos(timestamp * 0.058) * 0.06;
@@ -1565,24 +1682,84 @@
             this.ctx.shadowColor = isTurbo ? '#00dbe9' : 'rgba(255, 140, 0, 0.95)';
             this.ctx.shadowBlur = (isTurbo ? 36 : 18) + Math.random() * 8;
             this.ctx.globalAlpha = 0.92 + Math.random() * 0.08;
-
             this.ctx.drawImage(flameItem.img, -flameW, -flameH / 2, flameW, flameH);
-
             this.ctx.fillStyle = isTurbo ? 'rgba(0, 240, 255, 0.95)' : 'rgba(255, 240, 200, 0.85)';
             this.ctx.beginPath();
             this.ctx.arc(0, 0, (isTurbo ? 9 : 4.5) + pulse * 2, 0, Math.PI * 2);
             this.ctx.fill();
-
             this.ctx.restore();
           }
 
-          // 2. Sprite do caça (Dano Progressivo jato1 a jato6)
           let jetKey = 'jato1';
-          if (this.shields === 4) jetKey = 'jato2';
-          else if (this.shields === 3) jetKey = 'jato3';
-          else if (this.shields === 2) jetKey = 'jato4';
-          else if (this.shields === 1) jetKey = 'jato5';
-          else if (this.shields <= 0) jetKey = 'jato6';
+          let damageLevel = 0;
+          const maxS = (this.stage === 2) ? 3 : 5;
+          const currentS = Math.max(0, this.shields);
+          const ratio = currentS / maxS;
+
+          if (ratio >= 0.95) { jetKey = 'jato1'; damageLevel = 0; }
+          else if (ratio >= 0.75) { jetKey = 'jato2'; damageLevel = 1; }
+          else if (ratio >= 0.55) { jetKey = 'jato3'; damageLevel = 2; }
+          else if (ratio >= 0.35) { jetKey = 'jato4'; damageLevel = 3; }
+          else if (ratio > 0) { jetKey = 'jato5'; damageLevel = 4; }
+          else { jetKey = 'jato6'; damageLevel = 5; }
+
+          // Fumaça densa e faíscas que saem exatamente das áreas danificadas da fuselagem
+          if (damageLevel > 0) {
+            const spawnCount = Math.floor(1 + damageLevel * 0.8);
+            for (let k = 0; k < spawnCount; k++) {
+              if (Math.random() < 0.65) {
+                // Pontos de fratura/bico, asa e motor traseiro
+                let offsetX = 0;
+                let offsetY = 0;
+                const spot = Math.random();
+
+                if (spot < 0.4) {
+                  // Bico quebrado (Nível 2 em diante)
+                  offsetX = pW * 0.38 + (Math.random() - 0.5) * 10;
+                  offsetY = -pH * 0.05 + (Math.random() - 0.5) * 6;
+                } else if (spot < 0.75) {
+                  // Asa e fuselagem perfurada (Nível 3 e 4)
+                  offsetX = -pW * 0.1 + (Math.random() - 0.5) * 20;
+                  offsetY = pH * 0.15 + (Math.random() - 0.5) * 10;
+                } else {
+                  // Turbina/traseira destruída (Nível 5 e 6)
+                  offsetX = -pW * 0.42 + (Math.random() - 0.5) * 10;
+                  offsetY = -pH * 0.1 + (Math.random() - 0.5) * 8;
+                }
+
+                const smokeX = this.plane.x + offsetX;
+                const smokeY = this.plane.y + offsetY;
+                const grayVal = Math.floor(40 + Math.random() * 50); // Fumaça escura e visível
+                const initialAlpha = 0.55 + damageLevel * 0.08;
+                const smokeSpeedX = -3.2 - Math.random() * (2.0 + damageLevel * 0.6);
+                const smokeSpeedY = (Math.random() - 0.5) * 1.2 - 0.5;
+                const smokeSize = 5 + damageLevel * 2.2 + Math.random() * 4;
+
+                this.smokeTrails.push({
+                  x: smokeX,
+                  y: smokeY,
+                  vx: smokeSpeedX,
+                  vy: smokeSpeedY,
+                  size: smokeSize,
+                  alpha: initialAlpha,
+                  color: `rgba(${grayVal}, ${grayVal}, ${grayVal}, ${initialAlpha})`
+                });
+
+                // Faíscas elétricas/fogo em danos críticos (Níveis 3, 4, 5)
+                if (damageLevel >= 2 && Math.random() < 0.35) {
+                  this.particles.push({
+                    x: smokeX,
+                    y: smokeY,
+                    vx: smokeSpeedX * 0.8 + (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 3,
+                    size: 2 + Math.random() * 2.5,
+                    alpha: 0.9,
+                    color: Math.random() < 0.5 ? '#ffaa00' : '#ff3300'
+                  });
+                }
+              }
+            }
+          }
 
           const jetItem = this.images[jetKey];
 
@@ -1604,7 +1781,49 @@
           this.ctx.restore();
         }
 
-        // ================= DESENHO DOS MÍSSEIS INIMIGOS E BADGES =================
+                // Desenhar Caça Boss Chefão na Fase 3
+        if (this.stage === 3 || this.state === 'BOSS_EXPLODING') {
+          if (!this.bossY) this.bossY = this.height * 0.45;
+          this.bossY += Math.sin(timestamp * 0.002) * 1.2;
+          const bossX = this.width - 140;
+
+          if (this.bossExploding) {
+            this.bossExplosionTimer -= dt / 1000;
+
+            // Fumaça negra e fogo contínuo durante a destruição
+            for (let k = 0; k < 3; k++) {
+              this.smokeTrails.push({
+                x: bossX + (Math.random() - 0.5) * 200,
+                y: this.bossY + (Math.random() - 0.5) * 100,
+                vx: -Math.random() * 4 - 2,
+                vy: (Math.random() - 0.5) * 3,
+                size: 8 + Math.random() * 10,
+                alpha: 0.95,
+                color: Math.random() < 0.5 ? '#ef4444' : '#1e293b'
+              });
+            }
+
+            if (this.bossExplosionTimer <= 0) {
+              this.bossExploding = false;
+              // Boss destruído! Transita direto para o Menu de Vitória Final!
+              this.victory();
+            }
+          }
+
+          const bossImg = (this.images.bossShip && this.images.bossShip.loaded) ? this.images.bossShip.img : null;
+          this.ctx.save();
+          this.ctx.translate(bossX, this.bossY);
+          if (this.bossExploding) {
+            this.ctx.globalAlpha = Math.max(0, this.bossExplosionTimer / 3.0);
+          }
+
+          if (bossImg) {
+            const bW = 260; const bH = 140;
+            this.ctx.drawImage(bossImg, -bW / 2, -bH / 2, bW, bH);
+          }
+          this.ctx.restore();
+        }
+
         const missileSprite = (this.images.missileH && this.images.missileH.loaded) ? this.images.missileH.img : null;
 
         for (let m of this.missiles) {
@@ -1614,7 +1833,6 @@
           this.ctx.translate(m.x, m.y);
           this.ctx.rotate(m.angle);
 
-          // 1. CHAMA ANIMADA NA CAUDA DE TODOS OS MÍSSEIS INIMIGOS
           if (hasFlame) {
             const infFlameW = 44 * flamePulseX;
             const infFlameH = 17 * flamePulseY;
@@ -1628,22 +1846,56 @@
             this.ctx.restore();
           }
 
-          // 2. CORPO DO MÍSSIL
-          if (missileSprite) {
-            const mW = 50;
-            const mH = 15;
+          // ================= DESENHO DO MÍSSIL MILITAR (EXATAMENTE COMO NO PRINT) =================
+          if (missileSprite && missileSprite.complete && missileSprite.naturalWidth > 0) {
+            const mW = 56; const mH = 18;
             this.ctx.drawImage(missileSprite, -mW / 2, -mH / 2, mW, mH);
           } else {
-            this.ctx.fillStyle = '#ffb1c5';
-            this.ctx.fillRect(-22, -6, 44, 12);
+            this.ctx.save();
+            // 1. Aletas traseiras escuras
+            this.ctx.fillStyle = '#1e293b';
+            this.ctx.beginPath();
+            this.ctx.moveTo(-14, -4); this.ctx.lineTo(-24, -10); this.ctx.lineTo(-10, -4); this.ctx.fill();
+            this.ctx.beginPath();
+            this.ctx.moveTo(-14, 4); this.ctx.lineTo(-24, 10); this.ctx.lineTo(-10, 4); this.ctx.fill();
+
+            // 2. Corpo cilíndrico metálico (Cinza Prata)
+            const bodyGrad = this.ctx.createLinearGradient(0, -6, 0, 6);
+            bodyGrad.addColorStop(0, '#e2e8f0');
+            bodyGrad.addColorStop(0.4, '#94a3b8');
+            bodyGrad.addColorStop(1, '#475569');
+
+            this.ctx.fillStyle = bodyGrad;
+            this.ctx.beginPath();
+            if (this.ctx.roundRect) this.ctx.roundRect(-20, -5, 30, 10, 2);
+            else this.ctx.fillRect(-20, -5, 30, 10);
+            this.ctx.fill();
+
+            // 3. Anel / Faixa de Alerta Amarela
+            this.ctx.fillStyle = '#fbbf24';
+            this.ctx.fillRect(4, -5, 4, 10);
+
+            // 4. Bico / Ogiva Vermelha Aerodinâmica
+            this.ctx.fillStyle = '#ef4444';
+            this.ctx.beginPath();
+            this.ctx.moveTo(10, -5);
+            this.ctx.lineTo(25, 0);
+            this.ctx.lineTo(10, 5);
+            this.ctx.closePath();
+            this.ctx.fill();
+
+            // 5. Bocal do exaustor escuro
+            this.ctx.fillStyle = '#0f172a';
+            this.ctx.fillRect(-22, -3.5, 3, 7);
+            this.ctx.restore();
           }
           this.ctx.restore();
 
-          // ================= BADGE COM DESTAQUE DAS LETRAS DIGITADAS =================
           const isCurrentActive = (this.activeTargetId === m.id);
           const isErrorShake = (m.errorShakeUntil && m.errorShakeUntil > timestamp);
           const shakeOffsetX = isErrorShake ? Math.sin(timestamp * 0.1) * 4 : 0;
 
+          if (!m.word) continue; // No Estágio 2 não desenha caixa de palavras
           const wordUpper = m.word;
           const typedLen = Math.min(m.typedIndex || 0, wordUpper.length);
 
@@ -1652,22 +1904,17 @@
           this.ctx.textAlign = 'center';
           this.ctx.textBaseline = 'middle';
 
-                    // Renderizacao das letras e da velocidade do missil
-          const displaySpeed = Math.round(m.speed * 210); // Ex: 462 km/h
+          const displaySpeed = Math.round(m.speed * 210);
           const speedStr = `${displaySpeed} km/h`;
 
-          this.ctx.font = 'bold 16px "JetBrains Mono", monospace';
+          this.ctx.font = 'bold 20px "JetBrains Mono", monospace';
           const textWidth = this.ctx.measureText(wordUpper).width;
 
-          this.ctx.font = 'bold 10px "JetBrains Mono", monospace';
-          const speedWidth = this.ctx.measureText(speedStr).width;
-
           const boxW = Math.max(textWidth + 24, 75);
-          const boxH = 32;
+          const boxH = 40;
           const boxX = m.x - boxW / 2 + shakeOffsetX;
           const boxY = m.y + 28;
 
-          // Fundo do Badge com feedback de erro em vermelho neon se errou recentemente
           if (isErrorShake) {
             this.ctx.fillStyle = 'rgba(60, 10, 20, 0.95)';
             this.ctx.strokeStyle = '#ef4444';
@@ -1693,15 +1940,24 @@
           }
           this.ctx.shadowBlur = 0;
 
-          // 1. Renderizacao das letras (Verde para digitadas, Branco para pendentes)
           this.ctx.textAlign = 'left';
           this.ctx.textBaseline = 'middle';
           const startX = boxX + 10;
-          this.ctx.font = 'bold 16px "JetBrains Mono", monospace';
+          this.ctx.font = 'bold 20px "JetBrains Mono", monospace';
+
+          const arrowMap = { 'U': '⬆', 'D': '⬇', 'L': '⬅', 'R': '➡' };
+          const formattedWord = (this.controlMode === 'arrows')
+            ? wordUpper.split('').map(ch => arrowMap[ch] || ch).join(' ')
+            : wordUpper;
 
           if (typedLen > 0) {
-            const typedPart = wordUpper.slice(0, typedLen);
-            const remainingPart = wordUpper.slice(typedLen);
+            let typedPart = wordUpper.slice(0, typedLen);
+            let remainingPart = wordUpper.slice(typedLen);
+
+            if (this.controlMode === 'arrows') {
+              typedPart = typedPart.split('').map(ch => arrowMap[ch] || ch).join(' ') + ' ';
+              remainingPart = remainingPart.split('').map(ch => arrowMap[ch] || ch).join(' ');
+            }
 
             this.ctx.fillStyle = '#34d399';
             this.ctx.shadowColor = '#34d399';
@@ -1714,11 +1970,10 @@
             this.ctx.fillText(remainingPart, startX + typedW, boxY + boxH / 2);
           } else {
             this.ctx.fillStyle = isErrorShake ? '#ffb4ab' : (m.targetedByPlayer ? '#ffb1c5' : '#ffffff');
-            this.ctx.fillText(wordUpper, startX, boxY + boxH / 2);
+            this.ctx.fillText(formattedWord, startX, boxY + boxH / 2);
           }
 
-          // 2. Renderizacao da Velocidade Dinamica ACIMA da caixa (HUD Militar Amarelo Neon)
-          this.ctx.font = 'bold 11px "JetBrains Mono", "Space Grotesk", monospace';
+          this.ctx.font = 'bold 14px "JetBrains Mono", "Space Grotesk", monospace';
           this.ctx.textAlign = 'center';
           this.ctx.fillStyle = '#fbbf24';
           this.ctx.shadowColor = '#fbbf24';
@@ -1729,77 +1984,39 @@
           this.ctx.restore();
         }
 
+
+
         requestAnimationFrame((t) => this.renderLoop(t));
       }
 
       initEvents() {
         window.addEventListener('resize', () => this.resize());
 
-        // Clique na tela garante foco ativo e inicializa motor de som
         window.addEventListener('click', () => {
           sound.init();
-          // Foco permitido nos inputs
           window.focus();
         });
 
-        // Event listener global de teclado com captura garantida de 'V' e todas as letras
+        
+        window.addEventListener('keydown', (e) => {
+          this.keys[e.code] = true;
+          this.keys[e.key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+          this.keys[e.code] = false;
+          this.keys[e.key] = false;
+        });
         window.addEventListener('keydown', (e) => {
           sound.init();
 
-          // Telas de fim de jogo: Enter reinicia
           if ((this.state === 'GAMEOVER' || this.state === 'VICTORY') && e.key === 'Enter' && (!e.target || e.target.tagName !== 'INPUT')) {
             e.preventDefault();
             this.restart();
             return;
           }
 
-                  if (this.state === 'GAMEOVER') {
-          this.plane.vy += (dt / 16.6) * 0.42;
-          this.plane.vx *= 0.992;
-          this.plane.x += (dt / 16.6) * this.plane.vx;
-          this.plane.y += (dt / 16.6) * this.plane.vy;
-          this.plane.rotation = Math.atan2(this.plane.vy, this.plane.vx);
-
-          if (Math.random() < 0.85 && this.plane.y < this.height + 100) {
-            this.smokeTrails.push({
-              x: this.plane.x + (Math.random() - 0.5) * 24,
-              y: this.plane.y + (Math.random() - 0.5) * 24,
-              vx: (Math.random() - 0.5) * 2,
-              vy: -Math.random() * 2 - 1,
-              alpha: 0.9,
-              size: 4 + Math.random() * 5,
-              color: Math.random() > 0.4 ? '#ef4444' : '#334155'
-            });
-          }
-
-          if (this.plane.y > this.height - 80) {
-            this.plane.crashAlpha = Math.max(0, (this.plane.crashAlpha !== undefined ? this.plane.crashAlpha : 1.0) - (dt / 1000) * 1.8);
-          }
-        }
-
-        if (this.state === 'TURBO') {
-          this.plane.x += (dt / 16.6) * 22;
-          this.cameraX = this.worldDistance + (this.plane.x - 260);
-
-          // Partículas de rastro de turbo em ciano e laranja
-          if (Math.random() < 0.95) {
-            this.particles.push({
-              x: this.plane.x - 90,
-              y: this.plane.y + (Math.random() - 0.5) * 14,
-              vx: -Math.random() * 9 - 6,
-              vy: (Math.random() - 0.5) * 3,
-              alpha: 1.0,
-              color: Math.random() > 0.4 ? '#00dbe9' : '#ff7700',
-              size: Math.random() * 6 + 3.5
-            });
-          }
-
-          if (this.plane.x > this.width + 250) {
-            this.victory();
-          }
-        }
-
-        if (this.state === 'PLAYING') {
+          if (this.state === 'PLAYING' || this.state === 'BOSS_EXPLODING') {
             this.handleKeyDown(e);
           }
         }, { passive: false });
@@ -1808,26 +2025,67 @@
       }
     }
 
-        // Funcao global para decolar registrando o nome do piloto antes do jogo
+    // Seleção do Modo de Controle & Armamento
+    window.selectedControlMode = 'alpha';
+    window.selectedWeapon = 'missile';
+
+    window.selectControlMode = function(mode) {
+      window.selectedControlMode = mode;
+      const a = document.getElementById('control-option-alpha');
+      const r = document.getElementById('control-option-arrows');
+      if (a && r) {
+        if (mode === 'alpha') {
+          a.className = 'flex flex-col p-2.5 bg-black/80 border-2 border-tertiary rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-100 shadow-[0_0_15px_rgba(0,219,233,0.3)]';
+          r.className = 'flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60';
+        } else {
+          r.className = 'flex flex-col p-2.5 bg-black/80 border-2 border-amber-400 rounded-xl cursor-pointer hover:bg-amber-400/10 transition-all text-left relative opacity-100 shadow-[0_0_15px_rgba(251,191,36,0.3)]';
+          a.className = 'flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60';
+        }
+      }
+    };
+
+    window.selectWeaponMode = function(mode) {
+      window.selectedWeapon = mode;
+      const m = document.getElementById('weapon-option-missile');
+      const v = document.getElementById('weapon-option-vulcan');
+      if (m && v) {
+        if (mode === 'missile') {
+          m.className = 'flex flex-col p-2.5 bg-black/80 border-2 border-tertiary rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-100 shadow-[0_0_15px_rgba(0,219,233,0.3)]';
+          v.className = 'flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60';
+        } else {
+          v.className = 'flex flex-col p-2.5 bg-black/80 border-2 border-pink-500 rounded-xl cursor-pointer hover:bg-pink-500/10 transition-all text-left relative opacity-100 shadow-[0_0_15px_rgba(255,177,197,0.3)]';
+          m.className = 'flex flex-col p-2.5 bg-black/80 border border-outline-variant/60 rounded-xl cursor-pointer hover:bg-tertiary/10 transition-all text-left relative opacity-60';
+        }
+      }
+    };
+
     window.iniciarVooComNome = function() {
       const inputEl = document.getElementById('start-pilot-name');
       const name = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : 'Piloto Ás';
       
       if (window.currentGame) {
         window.currentGame.pilotName = name;
+        window.currentGame.weaponMode = window.selectedWeapon || 'missile';
+        window.currentGame.controlMode = window.selectedControlMode || 'alpha';
       }
       
-      // Atualizar o indicador do piloto no HUD do topo
       const pilotDisplay = document.getElementById('hud-pilot-display');
-      if (pilotDisplay) pilotDisplay.innerText = name.toUpperCase();
+      if (pilotDisplay) {
+        const wLabel = (window.selectedWeapon === 'vulcan') ? 'CANHÃO' : 'MÍSSIL';
+        const ctrlLabel = (window.selectedControlMode === 'arrows') ? 'SETAS ⬆⬇⬅➡' : 'TECLAS';
+        pilotDisplay.innerText = `${name.toUpperCase()} [${ctrlLabel} | ${wLabel}]`;
+      }
 
       document.getElementById('start-screen').classList.add('hidden');
       if (window.currentGame) window.currentGame.restart();
     };
 
     window.reiniciarJogo = function() {
+      document.getElementById('gameover-screen').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
       if (window.currentGame) {
-        window.currentGame.restart();
+        window.currentGame.state = 'PRE_FLIGHT';
       } else {
         window.currentGame = new SkyGame();
       }
@@ -1838,4 +2096,5 @@
       window.focus();
     });
   </script>
-</body></html>
+</body>
+</html>
